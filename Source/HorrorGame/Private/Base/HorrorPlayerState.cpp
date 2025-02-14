@@ -1,5 +1,12 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "Base/HorrorPlayerState.h"
 
+void AHorrorPlayerState::StartHallucinate_Implementation()
+{
+}
+
+void AHorrorPlayerState::EndHallucinate_Implementation()
+{
+}

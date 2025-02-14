@@ -1,5 +1,14 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "Building/PCGSettings.h"
 
+UWorld* UPCGSettings::GetWorld() const
+{
+	return ActorOwner != nullptr ? ActorOwner->GetWorld() : UObject::GetWorld();
+}
+
+void UPCGSettings::Initialize(AActor* Owner)
+{
+	ActorOwner = Owner;
+}

@@ -13,6 +13,7 @@ enum class EDisplayName : uint8
 	None = 0,
 	Main = 1,
 	Pause = 2,
+	Interaction = 3
 };
 
 UENUM(BlueprintType)

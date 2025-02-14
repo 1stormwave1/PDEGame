@@ -3,6 +3,7 @@
 
 #include "Effects/Effect.h"
 #include "Base/HorrorGameState.h"
+#include "Base/HorrorPlayerState.h"
 #include "Base/Components/EffectComponent.h"
 
 void UEffect::ApplyEffect_Implementation()
@@ -49,6 +50,12 @@ void UEffect::ChangeStacksAmount_Implementation(int32 StacksDelta)
 AHorrorGameState* UEffect::GetGameState() const
 {
 	return GetWorld() ? GetWorld()->GetGameState<AHorrorGameState>() : nullptr;
+}
+
+AHorrorPlayerState* UEffect::GetPlayerState() const
+{
+	return GetWorld() ?
+		GetWorld()->GetFirstPlayerController()->GetPlayerState<AHorrorPlayerState>() : nullptr;
 }
 
 UWorld* UEffect::GetWorld() const

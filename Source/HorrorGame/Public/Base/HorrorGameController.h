@@ -31,6 +31,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* PickUpInputAction;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	class UInputAction* PauseAction;
 	
 	UPROPERTY(Transient)
 	TArray<TObjectPtr<class UInventoryMainSlotInput>> InventoryMainSlotInputs;
@@ -66,11 +69,17 @@ public:
 	UFUNCTION()
 	void OnItemFinishUse();
 
+	UFUNCTION()
+	void PauseGame();
+
 	UFUNCTION(BlueprintNativeEvent)
 	void ToggleInventory();
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void PickUp();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void CancelInteract();
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE UInventoryComponent* GetInventoryComponent() const { return InventoryComponent; }

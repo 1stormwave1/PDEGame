@@ -1,27 +1,35 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "Building/Room.h"
 
-// Sets default values
+#include "Components/BoxComponent.h"
+
+
 ARoom::ARoom()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 }
 
-// Called when the game starts or when spawned
-void ARoom::BeginPlay()
+void ARoom::ApplySettings(const UPCGSettings* Settings)
 {
-	Super::BeginPlay();
 	
 }
 
-// Called every frame
-void ARoom::Tick(float DeltaTime)
+void ARoom::BeginPlay()
 {
-	Super::Tick(DeltaTime);
+	Super::BeginPlay();
 
+	TArray<USceneComponent*> RoomChildren;
+	RootComponent->GetChildrenComponents(true, RoomChildren);
+	for(USceneComponent* RoomChild : RoomChildren)
+	{
+		if(UBoxComponent* BoxComponent = Cast<UBoxComponent>(RoomChild))
+		{
+			if(BoxComponent->ComponentHasTag(RoomZoneComponentTag))
+			{
+				RoomZones.Add(BoxComponent);
+			}
+		}
+	}
 }
 

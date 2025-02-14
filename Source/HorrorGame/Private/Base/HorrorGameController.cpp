@@ -10,6 +10,7 @@
 #include "Components/ArrowComponent.h"
 #include "Inventory/InventoryMainSlotInput.h"
 #include "Inventory/ItemActor.h"
+#include "UI/HorrorHUD.h"
 
 void AHorrorGameController::BeginPlay()
 {
@@ -60,6 +61,8 @@ void AHorrorGameController::SetupInputComponent()
 			InventoryInputAction, ETriggerEvent::Started, this, &AHorrorGameController::ToggleInventory);
 		EnhancedInputComponent->BindAction(
 			PickUpInputAction, ETriggerEvent::Triggered, this, &AHorrorGameController::PickUp);
+		EnhancedInputComponent->BindAction(
+					PauseAction, ETriggerEvent::Triggered, this, &AHorrorGameController::PauseGame);
 	}
 }
 
@@ -123,6 +126,28 @@ void AHorrorGameController::OnItemFinishUse()
 	if(IsValid(CurrentItemActor))
 	{
 		CurrentItemActor->FinishUseItem();
+	}
+}
+
+void AHorrorGameController::PauseGame()
+{
+	SetPause(true);
+	if(AHorrorHUD* HUD = GetHUD<AHorrorHUD>())
+	{
+		HUD->SetDisplay(EDisplayName::Pause);
+	}
+}
+
+void AHorrorGameController::CancelInteract_Implementation()
+{
+	if(InteractionQueue.IsEmpty())
+	{
+		return;
+	}
+	
+	if(UInteractionComponent* InteractionComponent = Cast<UInteractionComponent>(InteractionQueue.Top()))
+	{
+		InteractionComponent->CancelInteract();
 	}
 }
 

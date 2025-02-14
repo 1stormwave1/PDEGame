@@ -8,17 +8,18 @@
 
 class UItem;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractChangedSignature, bool, bIsInteractable);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInteractedSignature);
 
 class AHorrorGameController;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( Blueprintable, BlueprintType, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class HORRORGAME_API UInteractionComponent : public USphereComponent
 {
 	GENERATED_BODY()
 	
 
 protected:
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, BlueprintReadWrite)
 	AHorrorGameController* MainController = nullptr;
 
 	bool bIsOverlapping = false;
@@ -42,9 +43,18 @@ public:
 	UPROPERTY(Transient)
 	UItem* ItemOwner = nullptr;
 	
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void Interact();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void CancelInteract();
 
 	UPROPERTY(BlueprintAssignable)
 	FOnInteractChangedSignature OnInteractChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnInteractedSignature OnInteracted;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnInteractedSignature OnInteractCanceled;
 };

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
@@ -6,21 +6,37 @@
 #include "GameFramework/Actor.h"
 #include "Room.generated.h"
 
+class UPCGSettings;
+class UBoxComponent;
+
+UENUM(BlueprintType)
+enum class ERoomType : uint8
+{
+	None = 0
+};
+
 UCLASS()
 class HORRORGAME_API ARoom : public AActor
 {
 	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	ERoomType RoomType;
+
+	UPROPERTY(Transient)
+	TArray<UBoxComponent*> RoomZones;
+
+	UPROPERTY(EditAnywhere)
+	FName RoomZoneComponentTag = TEXT("RoomZone");
+
+	UPROPERTY(EditAnywhere)
+	TArray<TSubclassOf<AActor>> InRoomActorClasses;
 	
-public:	
-	// Sets default values for this actor's properties
+public:
 	ARoom();
 
+	void ApplySettings(const UPCGSettings* Settings);
+
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 };

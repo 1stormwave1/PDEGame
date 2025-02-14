@@ -6,6 +6,7 @@
 #include "Effect.generated.h"
 
 
+class AHorrorPlayerState;
 class AHorrorGameState;
 class UEffectComponent;
 class UEffect;
@@ -97,6 +98,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	AHorrorGameState* GetGameState() const;
+
+	UFUNCTION(BlueprintCallable)
+	AHorrorPlayerState* GetPlayerState() const;
 
 	virtual UWorld* GetWorld() const override;
 

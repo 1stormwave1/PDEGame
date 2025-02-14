@@ -26,8 +26,11 @@ void UInteractionComponent::BeginPlay()
 UInteractionComponent::UInteractionComponent()
 {
 	SphereRadius = 150.f;
+}
 
-	
+void UInteractionComponent::CancelInteract_Implementation()
+{
+	OnInteractCanceled.Broadcast();
 }
 
 void UInteractionComponent::CheckOverlap_Implementation(AActor* OtherActor)
@@ -94,4 +97,6 @@ void UInteractionComponent::Interact_Implementation()
 			GetOwner()->Destroy();
 		}
 	}
+
+	OnInteracted.Broadcast();
 }

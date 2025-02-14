@@ -1,17 +1,27 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "PCGSettings.generated.h"
 
-/**
- * 
- */
-UCLASS()
+
+class ARoom;
+
+UCLASS(BlueprintType, Blueprintable)
 class HORRORGAME_API UPCGSettings : public UObject
 {
 	GENERATED_BODY()
-	
+
+protected:
+	UPROPERTY(BlueprintReadWrite, Transient)
+	AActor* ActorOwner = nullptr;
+
+	virtual UWorld* GetWorld() const override;
+
+public:
+	void Initialize(AActor* Owner);
+
+	UPROPERTY(EditAnywhere)
+	TMap<TSubclassOf<ARoom>, float> RoomsProbabilitySpawn;
 };

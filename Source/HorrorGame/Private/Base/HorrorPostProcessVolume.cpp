@@ -2,16 +2,15 @@
 
 
 #include "Base/HorrorPostProcessVolume.h"
-
-#include "Base/HorrorGameState.h"
+#include "Base/HorrorPlayerState.h"
 
 void AHorrorPostProcessVolume::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if(AHorrorGameState* GameState = GetWorld()->GetGameState<AHorrorGameState>())
+	if(AHorrorPlayerState* PlayerState = GetWorld()->GetFirstPlayerController()->GetPlayerState<AHorrorPlayerState>())
 	{
-		GameState->HorrorPPV = this;
+		PlayerState->HorrorPPV = this;
 	}
 }
 
