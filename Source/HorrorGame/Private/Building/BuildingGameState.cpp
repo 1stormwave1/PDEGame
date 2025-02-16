@@ -38,3 +38,12 @@ void ABuildingGameState::SpawnRooms(UPCGNode* Root)
 		}
 	}
 }
+
+void ABuildingGameState::OnCurrentRoomChanged_Implementation(ARoom* NewRoom)
+{
+	if(NewRoom != CurrentRoom)
+	{
+		CurrentRoom = NewRoom;
+		OnCurrentRoomChangedDelegate.Broadcast(CurrentRoom);
+	}
+}
