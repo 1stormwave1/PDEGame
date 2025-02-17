@@ -157,7 +157,37 @@ bool UInventoryComponent::PutItemInBodySlotByType(UItem* Item, EBodyType Type)
 	return false;
 }
 
-bool UInventoryComponent::PutItemInBodySlotByTypeWithActor(AItemActor* Actor, UItem* Item, EBodyType Type)
+bool UInventoryComponent::PutItemInMicrochipSlotWithActor(AItemActor* Actor, UItem* Item)
+{
+	if(!IsValid(Item))
+	{
+		return false;
+	}
+	if(const UMicrochipItem* MicrochipItem = Cast<UMicrochipItem>(Item))
+	{
+		for(int i = 0; i < MicrochipSlots.Num(); ++i)
+		{
+			if(MicrochipSlots[i].MicrochipType == MicrochipItem->MicrochipType && MicrochipSlots[i].CurrentItem == nullptr)
+			{
+				MicrochipSlots[i].ItemActor = Actor;
+				PutItemInMicrochipSlots(Item, i);
+				return true;
+			}
+		}
+		for(int i = 0; i < MicrochipSlots.Num(); ++i)
+		{
+			if(MicrochipSlots[i].CurrentItem == nullptr)
+			{
+				MicrochipSlots[i].ItemActor = Actor;
+				PutItemInMicrochipSlots(Item, i);
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool UInventoryComponent::PutItemInBodySlotWithActor(AItemActor* Actor, UItem* Item)
 {
 	if(!IsValid(Item))
 	{
@@ -166,16 +196,13 @@ bool UInventoryComponent::PutItemInBodySlotByTypeWithActor(AItemActor* Actor, UI
 	
 	if(const UBodyItem* BodyItem = Cast<UBodyItem>(Item))
 	{
-		if(BodyItem->BodyType == Type)
+		for(int i = 0; i < BodySlots.Num(); ++i)
 		{
-			for(int i = 0; i < BodySlots.Num(); ++i)
+			if(BodySlots[i].BodyType == BodyItem->BodyType && BodySlots[i].CurrentItem == nullptr)
 			{
-				if(BodySlots[i].BodyType == Type && BodySlots[i].CurrentItem == nullptr)
-				{
-					BodySlots[i].ItemActor = Actor;
-					PutItemInBodySlots(Item, i);
-					return true;
-				}
+				BodySlots[i].ItemActor = Actor;
+				PutItemInBodySlots(Item, i);
+				return true;
 			}
 		}
 	}

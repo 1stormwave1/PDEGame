@@ -100,13 +100,19 @@ void AHorrorGameController::OnItemStartUse()
 	{
 		if(UBodyItem* BodyItem = Cast<UBodyItem>(InventoryComponent->GetCurrentActiveItem()))
 		{
-			if(!InventoryComponent->PutItemInBodySlotByTypeWithActor(CurrentItemActor, BodyItem, BodyItem->BodyType))
+			if(!InventoryComponent->PutItemInBodySlotWithActor(CurrentItemActor, BodyItem))
 			{
 				return;
 			}
-			InventoryComponent->SetCurrentItemActor(nullptr);
-			InventoryComponent->ClearQASlot(InventoryComponent->GetCurrentActiveSlotIndex());
 		}
+		if(UMicrochipItem* MicrochipItem = Cast<UMicrochipItem>(InventoryComponent->GetCurrentActiveItem()))
+		{
+			if(!InventoryComponent->PutItemInMicrochipSlotWithActor(CurrentItemActor,MicrochipItem))
+			{
+				return;
+			}
+		}
+		InventoryComponent->ClearQASlot(InventoryComponent->GetCurrentActiveSlotIndex());
 		CurrentItemActor->StartUseItem();
 	}
 }

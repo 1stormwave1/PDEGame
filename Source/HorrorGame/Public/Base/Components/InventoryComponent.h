@@ -192,7 +192,10 @@ public:
 	bool PutItemInBodySlotByType(UItem* Item, EBodyType Type);
 
 	UFUNCTION(BlueprintCallable)
-	bool PutItemInBodySlotByTypeWithActor(AItemActor* Actor, UItem* Item, EBodyType Type);
+	bool PutItemInMicrochipSlotWithActor(AItemActor* Actor, UItem* Item);
+
+	UFUNCTION(BlueprintCallable)
+	bool PutItemInBodySlotWithActor(AItemActor* Actor, UItem* Item);
 
 	UFUNCTION(BlueprintCallable)
 	void PutItemInMicrochipSlots(UItem* Item, int32 Index);
