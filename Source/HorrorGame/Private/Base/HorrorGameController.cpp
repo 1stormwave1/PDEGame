@@ -60,7 +60,7 @@ void AHorrorGameController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(
 			InventoryInputAction, ETriggerEvent::Started, this, &AHorrorGameController::ToggleInventory);
 		EnhancedInputComponent->BindAction(
-			PickUpInputAction, ETriggerEvent::Triggered, this, &AHorrorGameController::PickUp);
+			PickUpInputAction, ETriggerEvent::Triggered, this, &AHorrorGameController::Interact);
 		EnhancedInputComponent->BindAction(
 					PauseAction, ETriggerEvent::Triggered, this, &AHorrorGameController::PauseGame);
 	}
@@ -157,7 +157,7 @@ void AHorrorGameController::CancelInteract_Implementation()
 	}
 }
 
-void AHorrorGameController::PickUp_Implementation()
+void AHorrorGameController::Interact_Implementation()
 {
 	if(InteractionQueue.IsEmpty())
 	{

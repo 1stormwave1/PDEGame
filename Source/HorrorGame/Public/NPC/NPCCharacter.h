@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
@@ -6,24 +6,32 @@
 #include "GameFramework/Character.h"
 #include "NPCCharacter.generated.h"
 
+class UInteractionComponent;
+class UWidgetComponent;
+
 UCLASS()
 class HORRORGAME_API ANPCCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	ANPCCharacter();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UInteractionComponent> InteractionComponent;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UWidgetComponent> InteractionWidgetComponent;
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void OnInteractChanged(bool bIsInteractable);
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void OnInteract();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void OnInteractCancel();
 };

@@ -1,34 +1,49 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "NPC/NPCCharacter.h"
 
-// Sets default values
+#include "Base/Components/DialogueComponent.h"
+#include "Base/Components/InteractionComponent.h"
+#include "Components/WidgetComponent.h"
+#include "NPC/NPCController.h"
+
+
 ANPCCharacter::ANPCCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	InteractionComponent = CreateDefaultSubobject<UInteractionComponent>(TEXT("InteractionComponent"));
+	InteractionComponent->SetupAttachment(RootComponent);
 
+	InteractionWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractionWidgetComponent"));
+	InteractionWidgetComponent->SetupAttachment(RootComponent);
 }
 
-// Called when the game starts or when spawned
 void ANPCCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	InteractionComponent->OnInteractChanged.AddDynamic(this, &ANPCCharacter::OnInteractChanged);
+	InteractionComponent->OnInteracted.AddDynamic(this, &ANPCCharacter::OnInteract);
+	InteractionComponent->OnInteractCanceled.AddDynamic(this, &ANPCCharacter::OnInteractCancel);
 }
 
-// Called every frame
-void ANPCCharacter::Tick(float DeltaTime)
+void ANPCCharacter::OnInteract_Implementation()
 {
-	Super::Tick(DeltaTime);
-
+	if(ANPCController* NPCController = GetController<ANPCController>())
+	{
+		NPCController->DialogueComponent->StartDialogue();
+	}
 }
 
-// Called to bind functionality to input
-void ANPCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ANPCCharacter::OnInteractCancel_Implementation()
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	if(ANPCController* NPCController = GetController<ANPCController>())
+	{
+		NPCController->DialogueComponent->EndDialogue(true);
+	}
 }
 
+void ANPCCharacter::OnInteractChanged_Implementation(bool bIsInteractable)
+{
+	InteractionWidgetComponent->SetHiddenInGame(!bIsInteractable);
+}

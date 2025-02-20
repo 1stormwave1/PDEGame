@@ -1,34 +1,88 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "Base/Components/DialogueComponent.h"
 
-// Sets default values for this component's properties
+#include "AIController.h"
+#include "BrainComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
+
 UDialogueComponent::UDialogueComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
-// Called when the game starts
 void UDialogueComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	CurrentController = GetOwner<AAIController>();
 }
 
-
-// Called every frame
-void UDialogueComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+bool UDialogueComponent::IsDialogueActive_Implementation()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
+	if(CurrentController != nullptr && CurrentController->GetBrainComponent() != nullptr)
+	{
+		return CurrentController->GetBrainComponent()->IsRunning();
+	}
+	return false;
 }
 
+void UDialogueComponent::NextStepDialogue_Implementation(FDialogueStepData DialogueStepData)
+{
+	if(CurrentBlackboard != nullptr)
+	{
+		CurrentBlackboard->SetValueAsBool(IsNextStepReadyKeyName, false);
+	}
+	if(CurrentController != nullptr)
+	{
+		if(ACharacter* Character = CurrentController->GetCharacter())
+		{
+			if(DialogueStepData.AnimMontage != nullptr)
+			{
+				Character->GetMesh()->GetAnimInstance()->Montage_Play(DialogueStepData.AnimMontage);
+			}
+		}
+	}
+	OnDialogueNextStep.Broadcast(DialogueStepData);
+}
+
+void UDialogueComponent::StartDialogue_Implementation()
+{
+	if(CurrentController != nullptr)
+	{
+		if(CurrentController->GetBrainComponent() != nullptr && CurrentController->GetBrainComponent()->IsRunning())
+		{
+			CurrentController->GetBrainComponent()->RestartLogic();
+		}
+		CurrentController->RunBehaviorTree(DialogueTree);
+		CurrentController->SetFocus(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		CurrentBlackboard = CurrentController->GetBlackboardComponent();
+	}
+	OnDialogueStarted.Broadcast();
+}
+
+
+
+void UDialogueComponent::EndDialogue_Implementation(bool bTerminate)
+{
+	if(CurrentController != nullptr && CurrentController->GetBrainComponent() != nullptr)
+	{
+		if(CurrentController->GetBrainComponent()->IsRunning())
+		{
+			CurrentController->GetBrainComponent()->StopLogic(TEXT("DialogueEnd"));
+			CurrentController->ClearFocus(EAIFocusPriority::Gameplay);
+			OnDialogueEnded.Broadcast(bTerminate);
+		}
+	}
+}
+
+void UDialogueComponent::ReceiveResponse_Implementation(const FText& Response)
+{
+	CurrentBlackboard->SetValueAsBool(IsNextStepReadyKeyName, true);
+	CurrentBlackboard->SetValueAsString(ResponseKeyName, Response.ToString());
+
+	OnDialogueResponseReceived.Broadcast(Response);
+}

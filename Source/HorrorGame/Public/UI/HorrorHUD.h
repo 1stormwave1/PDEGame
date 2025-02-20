@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Base/Components/DialogueComponent.h"
 #include "HorrorHUD.generated.h"
 
 class UUserWidget;
@@ -13,7 +14,8 @@ enum class EDisplayName : uint8
 	None = 0,
 	Main = 1,
 	Pause = 2,
-	Interaction = 3
+	Interaction = 3,
+	Dialogue = 4
 };
 
 UENUM(BlueprintType)
@@ -94,5 +96,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetInputMode(EInputMode InputMode, EMouseLockMode MouseLockMode,
 		bool bHideCursorDuringCapture, bool bShowMouseCursor);
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnDialogueStartedSignature OnDialogueStarted;
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnDialogueEndedSignature OnDialogueEnded;
 	
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnDialogueNextStepSignature OnDialogueNextStep;
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnDialogueResponseReceivedSignature OnDialogueResponseReceived;
 };

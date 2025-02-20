@@ -1,5 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 
 #include "NPC/NPCController.h"
+#include "Base/Components/DialogueComponent.h"
 
+ANPCController::ANPCController()
+{
+	DialogueComponent = CreateDefaultSubobject<UDialogueComponent>(TEXT("DialogueComponent"));
+}

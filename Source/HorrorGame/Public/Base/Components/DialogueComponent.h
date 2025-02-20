@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
@@ -7,22 +7,87 @@
 #include "DialogueComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+class UBehaviorTree;
+class AAIController;
+class USoundCue;
+class UBlackboardComponent;
+
+USTRUCT(BlueprintType)
+struct FDialogueStepData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (MultiLine="true"))
+	FText Line;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FText> Responses;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UAnimMontage> AnimMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<USoundCue> Sound;
+};
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDialogueStartedSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueEndedSignature, bool, bTerminate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueNextStepSignature, FDialogueStepData, DialogueStepData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueResponseReceivedSignature, const FText&, Response);
+
+UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class HORRORGAME_API UDialogueComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UBehaviorTree> DialogueTree;
+
+	UPROPERTY(Transient)
+	TObjectPtr<AAIController> CurrentController = nullptr;
+
+	UPROPERTY(Transient)
+	TObjectPtr<UBlackboardComponent> CurrentBlackboard = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	FName ResponseKeyName = TEXT("Response");
+
+	UPROPERTY(EditAnywhere)
+	FName IsNextStepReadyKeyName = TEXT("bIsNextStepReady");
+ 
+public:
+	UPROPERTY(BlueprintAssignable)
+	FOnDialogueStartedSignature OnDialogueStarted;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnDialogueEndedSignature OnDialogueEnded;
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnDialogueNextStepSignature OnDialogueNextStep;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnDialogueResponseReceivedSignature OnDialogueResponseReceived;
+	
 	UDialogueComponent();
 
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+public:
 
-		
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void StartDialogue();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void NextStepDialogue(FDialogueStepData DialogueStepData);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void EndDialogue(bool bTerminate);
+
+	UFUNCTION(BlueprintPure, BlueprintNativeEvent)
+	bool IsDialogueActive();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void ReceiveResponse(const FText& Response);
 };

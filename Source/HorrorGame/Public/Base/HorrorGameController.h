@@ -76,7 +76,7 @@ public:
 	void ToggleInventory();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void PickUp();
+	void Interact();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void CancelInteract();
