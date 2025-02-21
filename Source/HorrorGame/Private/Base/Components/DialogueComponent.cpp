@@ -3,11 +3,13 @@
 
 #include "Base/Components/DialogueComponent.h"
 
-#include "AIController.h"
+#include "NPC/NPCController.h"
 #include "BrainComponent.h"
+#include "Base/HorrorGameInstance.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "NPC/NPCCharacter.h"
 
 UDialogueComponent::UDialogueComponent()
 {
@@ -18,7 +20,25 @@ void UDialogueComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CurrentController = GetOwner<AAIController>();
+	CurrentController = GetOwner<ANPCController>();
+
+	UHorrorGameInstance* GameInstance =
+		Cast<UHorrorGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+
+	if(IsValid(CurrentController) && IsValid(GameInstance))
+	{
+		if(ANPCCharacter* Character = CurrentController->GetPawn<ANPCCharacter>())
+		{
+			TArray<UBehaviorTree*> BehaviorTrees;
+			GameInstance->GetBehaviourTreeForCurrentStorylines(
+				Character->NPCName.ToString(), BehaviorTrees);
+
+			if(!BehaviorTrees.IsEmpty())
+			{
+				DialogueTree = BehaviorTrees[0];
+			}
+		}
+	}
 }
 
 bool UDialogueComponent::IsDialogueActive_Implementation()

@@ -17,6 +17,9 @@ class HORRORGAME_API ANPCCharacter : public ACharacter
 public:
 	ANPCCharacter();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText NPCName;
+
 protected:
 	virtual void BeginPlay() override;
 

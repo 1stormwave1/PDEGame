@@ -7,6 +7,7 @@
 #include "DialogueComponent.generated.h"
 
 
+class ANPCController;
 class UBehaviorTree;
 class AAIController;
 class USoundCue;
@@ -41,11 +42,11 @@ class HORRORGAME_API UDialogueComponent : public UActorComponent
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UBehaviorTree> DialogueTree;
 
 	UPROPERTY(Transient)
-	TObjectPtr<AAIController> CurrentController = nullptr;
+	TObjectPtr<ANPCController> CurrentController = nullptr;
 
 	UPROPERTY(Transient)
 	TObjectPtr<UBlackboardComponent> CurrentBlackboard = nullptr;
