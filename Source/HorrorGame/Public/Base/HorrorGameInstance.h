@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "Story/Storyline.h"
 #include "HorrorGameInstance.generated.h"
 
 
@@ -33,4 +34,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void GetBehaviourTreeForCurrentStorylines(const FString& DialogueOwnerName, TArray<UBehaviorTree*>& BehaviourTrees);
+
+	UFUNCTION(BlueprintPure)
+	void GetDialoguesForCurrentStorylines(const FString& DialogueOwnerName, TArray<FStorylineDialogue>& OutDialogues);
+
+	UFUNCTION(BlueprintCallable)
+	void GetParticipatedStorylines(const FString& DialogueOwnerName, TArray<UStoryline*>& OutStorylines);
 };

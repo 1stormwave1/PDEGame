@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Story/Storyline.h"
 #include "DialogueComponent.generated.h"
 
 
@@ -31,7 +32,23 @@ struct FDialogueStepData
 	TObjectPtr<USoundCue> Sound;
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDialogueStartedSignature);
+USTRUCT(BlueprintType)
+struct FDialogueStartData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsSkippable = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsPersistent = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString OwnerName;
+};
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueStartedSignature, FDialogueStartData, DialogueData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDialogueSkipSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueEndedSignature, bool, bTerminate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueNextStepSignature, FDialogueStepData, DialogueStepData);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueResponseReceivedSignature, const FText&, Response);
@@ -42,8 +59,17 @@ class HORRORGAME_API UDialogueComponent : public UActorComponent
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY(BlueprintReadWrite, Transient)
+	TArray<UStoryline*> ParticipatedStorylines;
+
+	UPROPERTY(BlueprintReadWrite, Transient)
+	UBehaviorTree* CurrentDialogueBehaviourTree = nullptr;
+
 	UPROPERTY(BlueprintReadWrite)
-	TObjectPtr<UBehaviorTree> DialogueTree;
+	int CurrentStorylineIndex = 0;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString DialogueOwnerName;
 
 	UPROPERTY(Transient)
 	TObjectPtr<ANPCController> CurrentController = nullptr;
@@ -56,6 +82,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	FName IsNextStepReadyKeyName = TEXT("bIsNextStepReady");
+
+	UPROPERTY(EditAnywhere, Transient)
+	UBehaviorTree* PersistentDialogueBehaviourTree = nullptr;
  
 public:
 	UPROPERTY(BlueprintAssignable)
@@ -91,4 +120,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void ReceiveResponse(const FText& Response);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void SkipCurrentDialogue();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void UpdateCurrentDialogue();
 };

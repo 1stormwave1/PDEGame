@@ -6,6 +6,7 @@
 #include "NPC/NPCController.h"
 #include "BrainComponent.h"
 #include "Base/HorrorGameInstance.h"
+#include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
@@ -29,16 +30,31 @@ void UDialogueComponent::BeginPlay()
 	{
 		if(ANPCCharacter* Character = CurrentController->GetPawn<ANPCCharacter>())
 		{
-			TArray<UBehaviorTree*> BehaviorTrees;
-			GameInstance->GetBehaviourTreeForCurrentStorylines(
-				Character->NPCName.ToString(), BehaviorTrees);
-
-			if(!BehaviorTrees.IsEmpty())
-			{
-				DialogueTree = BehaviorTrees[0];
-			}
+			DialogueOwnerName = Character->NPCName.ToString();
+			GameInstance->GetParticipatedStorylines(
+				DialogueOwnerName, ParticipatedStorylines);
 		}
 	}
+
+	UpdateCurrentDialogue();
+}
+
+void UDialogueComponent::UpdateCurrentDialogue_Implementation()
+{
+	if(ParticipatedStorylines.IsValidIndex(CurrentStorylineIndex))
+	{
+		CurrentDialogueBehaviourTree =
+			ParticipatedStorylines[CurrentStorylineIndex]->GetDialogueTreeByName(DialogueOwnerName);
+	}
+	if(!IsValid(CurrentDialogueBehaviourTree) && IsValid(PersistentDialogueBehaviourTree))
+	{
+		CurrentDialogueBehaviourTree = PersistentDialogueBehaviourTree;
+	}
+}
+
+void UDialogueComponent::SkipCurrentDialogue_Implementation()
+{
+	EndDialogue(true);
 }
 
 bool UDialogueComponent::IsDialogueActive_Implementation()
@@ -77,11 +93,21 @@ void UDialogueComponent::StartDialogue_Implementation()
 		{
 			CurrentController->GetBrainComponent()->RestartLogic();
 		}
-		CurrentController->RunBehaviorTree(DialogueTree);
+		CurrentController->RunBehaviorTree(CurrentDialogueBehaviourTree);
 		CurrentController->SetFocus(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 		CurrentBlackboard = CurrentController->GetBlackboardComponent();
 	}
-	OnDialogueStarted.Broadcast();
+
+	FDialogueStartData DialogueStartData;
+	DialogueStartData.OwnerName = DialogueOwnerName;
+	if(CurrentDialogueBehaviourTree == ParticipatedStorylines[CurrentStorylineIndex]->GetDialogueTreeByName(DialogueOwnerName))
+	{
+		DialogueStartData.bIsSkippable =
+			ParticipatedStorylines[CurrentStorylineIndex]->IsCurrentStepDialogueSkippableByOwnerName(DialogueOwnerName);
+	}
+	DialogueStartData.bIsPersistent = CurrentDialogueBehaviourTree == PersistentDialogueBehaviourTree;
+
+	OnDialogueStarted.Broadcast(DialogueStartData);
 }
 
 
@@ -97,6 +123,11 @@ void UDialogueComponent::EndDialogue_Implementation(bool bTerminate)
 			OnDialogueEnded.Broadcast(bTerminate);
 		}
 	}
+	if(ParticipatedStorylines[CurrentStorylineIndex]->GetDialogueTreeByName(DialogueOwnerName) == CurrentDialogueBehaviourTree)
+	{
+		ParticipatedStorylines[CurrentStorylineIndex]->SetCurrentStepDialogueDoneByOwnerName(DialogueOwnerName);
+	}
+	UpdateCurrentDialogue();
 }
 
 void UDialogueComponent::ReceiveResponse_Implementation(const FText& Response)

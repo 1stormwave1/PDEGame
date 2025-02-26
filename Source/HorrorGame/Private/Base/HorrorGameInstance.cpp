@@ -3,6 +3,7 @@
 
 #include "Base/HorrorGameInstance.h"
 
+#include "Base/Components/DialogueComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "Story/Storyline.h"
 
@@ -33,6 +34,40 @@ void UHorrorGameInstance::GetBehaviourTreeForCurrentStorylines(const FString& Di
 			if(UBehaviorTree* BehaviorTree = Storyline->GetDialogueTreeByName(DialogueOwnerName))
 			{
 				BehaviourTrees.Add(BehaviorTree);
+			}
+		}
+	}
+}
+
+void UHorrorGameInstance::GetDialoguesForCurrentStorylines(const FString& DialogueOwnerName,
+	TArray<FStorylineDialogue>& OutDialogues)
+{
+	for(UStoryline* Storyline : Storylines)
+	{
+		if(IsValid(Storyline))
+		{
+			FStorylineDialogue Dialogue = Storyline->GetDialogueByName(DialogueOwnerName);
+			OutDialogues.Add(Dialogue);
+		}
+	}
+}
+
+void UHorrorGameInstance::GetParticipatedStorylines(const FString& DialogueOwnerName, TArray<UStoryline*>& OutStorylines)
+{
+	for(UStoryline* Storyline : Storylines)
+	{
+		if(IsValid(Storyline))
+		{
+			for(FStorylineStep& Step : Storyline->Steps)
+			{
+				for(FStorylineDialogue& Dialogue : Step.Dialogues)
+				{
+					if(Dialogue.DialogueOwnerName == DialogueOwnerName)
+					{
+						OutStorylines.AddUnique(Storyline);
+						break;
+					}
+				}
 			}
 		}
 	}

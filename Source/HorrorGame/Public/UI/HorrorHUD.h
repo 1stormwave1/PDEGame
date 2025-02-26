@@ -101,6 +101,9 @@ public:
 	FOnDialogueStartedSignature OnDialogueStarted;
 
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnDialogueSkipSignature OnDialogueSkip;
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
 	FOnDialogueEndedSignature OnDialogueEnded;
 	
 	UPROPERTY(BlueprintAssignable, BlueprintCallable)

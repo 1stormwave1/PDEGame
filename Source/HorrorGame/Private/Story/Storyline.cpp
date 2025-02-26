@@ -18,6 +18,55 @@ UBehaviorTree* UStoryline::GetDialogueTreeByName(const FString& DialogueOwnerNam
 	return nullptr;
 }
 
+FStorylineDialogue UStoryline::GetDialogueByName(const FString& DialogueOwnerName)
+{
+	if(Steps.IsValidIndex(CurrentStepIndex))
+	{
+		for(FStorylineDialogue& Dialogue : Steps[CurrentStepIndex].Dialogues)
+		{
+			if(Dialogue.DialogueOwnerName == DialogueOwnerName)
+			{
+				return Dialogue;
+			}
+		}
+	}
+	return FStorylineDialogue();
+}
+
+void UStoryline::SetCurrentStepDialogueDoneByOwnerName_Implementation(const FString& DialogueOwnerName)
+{
+	//no multiple dialogues with the same DialogueOwnerName in the same step!!! 
+	if(Steps.IsValidIndex(CurrentStepIndex))
+	{
+		for(FStorylineDialogue& Dialogue : Steps[CurrentStepIndex].Dialogues)
+		{
+			if(Dialogue.DialogueOwnerName == DialogueOwnerName)
+			{
+				Dialogue.bIsDone = true;
+			}
+		}
+		if(IsStorylineCurrentStepDone())
+		{
+			ContinueStoryline();
+		}
+	}
+}
+
+bool UStoryline::IsCurrentStepDialogueSkippableByOwnerName_Implementation(const FString& DialogueOwnerName)
+{
+	if(Steps.IsValidIndex(CurrentStepIndex))
+	{
+		for(FStorylineDialogue& Dialogue : Steps[CurrentStepIndex].Dialogues)
+		{
+			if(Dialogue.DialogueOwnerName == DialogueOwnerName)
+			{
+				return Dialogue.bIsSkippable;
+			}
+		}
+	}
+	return false;
+}
+
 bool UStoryline::IsStorylineCurrentStepDone() const
 {
 	if(Steps.IsValidIndex(CurrentStepIndex))

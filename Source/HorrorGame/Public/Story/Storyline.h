@@ -26,6 +26,8 @@ struct FStorylineDialogue
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UBehaviorTree> DialogueTree;
+	
+	FStorylineDialogue() = default;
 };
 
 
@@ -44,24 +46,33 @@ class HORRORGAME_API UStoryline : public UObject
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FStorylineStep> Steps;
-
 	UPROPERTY(BlueprintReadWrite)
 	int CurrentStepIndex = 0;
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FStorylineStep> Steps;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString StorylineName;
 	
 	UFUNCTION(BlueprintPure)
 	UBehaviorTree* GetDialogueTreeByName(const FString& DialogueOwnerName);
 
+	UFUNCTION(BlueprintPure)
+	FStorylineDialogue GetDialogueByName(const FString& DialogueOwnerName);
+
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void ContinueStoryline();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void SetCurrentStepDialogueDone(const FString& DialogueName);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void SetCurrentStepDialogueDoneByOwnerName(const FString& DialogueOwnerName);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	bool IsCurrentStepDialogueSkippableByOwnerName(const FString& DialogueOwnerName);
 
 	UFUNCTION(BlueprintPure)
 	bool IsStorylineCurrentStepDone() const;
