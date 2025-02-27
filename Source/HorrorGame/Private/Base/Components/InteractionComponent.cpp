@@ -35,6 +35,11 @@ void UInteractionComponent::CancelInteract_Implementation()
 
 void UInteractionComponent::CheckOverlap_Implementation(AActor* OtherActor)
 {
+	if(!bIsInteractable)
+	{
+		return;
+	}
+	
 	if(MainController->GetInventoryComponent()->DoesContainItem(ItemOwner))
 	{
 		return;
@@ -82,6 +87,11 @@ void UInteractionComponent::BeginOverlap_Implementation(UPrimitiveComponent* Ove
 
 void UInteractionComponent::Interact_Implementation()
 {
+	if(!bIsInteractable)
+	{
+		return;
+	}
+
 	if(!IsValid(MainController))
 	{
 		return;

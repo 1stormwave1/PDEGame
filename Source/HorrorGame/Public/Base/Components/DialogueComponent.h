@@ -52,6 +52,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDialogueSkipSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueEndedSignature, bool, bTerminate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueNextStepSignature, FDialogueStepData, DialogueStepData);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueResponseReceivedSignature, const FText&, Response);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDialogueUpdated, UBehaviorTree*, CurrentDialogueBehaviourTree);
+
 
 UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class HORRORGAME_API UDialogueComponent : public UActorComponent
@@ -98,6 +100,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnDialogueResponseReceivedSignature OnDialogueResponseReceived;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnDialogueUpdated OnDialogueUpdated;
 	
 	UDialogueComponent();
 

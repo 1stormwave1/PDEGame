@@ -23,6 +23,9 @@ protected:
 	AHorrorGameController* MainController = nullptr;
 
 	bool bIsOverlapping = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsInteractable = true;
 	
 	virtual void BeginPlay() override;
 

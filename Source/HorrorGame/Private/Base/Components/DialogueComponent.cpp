@@ -50,6 +50,8 @@ void UDialogueComponent::UpdateCurrentDialogue_Implementation()
 	{
 		CurrentDialogueBehaviourTree = PersistentDialogueBehaviourTree;
 	}
+
+	OnDialogueUpdated.Broadcast(CurrentDialogueBehaviourTree);
 }
 
 void UDialogueComponent::SkipCurrentDialogue_Implementation()
