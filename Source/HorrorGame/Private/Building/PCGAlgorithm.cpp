@@ -2,7 +2,7 @@
 
 
 #include "Building/PCGAlgorithm.h"
-#include "Building/PCGSettings.h"
+#include "Building/PCGBuildingSettings.h"
 #include "Building/PCGTree.h"
 
 UWorld* UPCGAlgorithm::GetWorld() const
@@ -13,7 +13,7 @@ UWorld* UPCGAlgorithm::GetWorld() const
 void UPCGAlgorithm::Initialize(AActor* Owner)
 {
 	ActorOwner = Owner;
-	Settings = NewObject<UPCGSettings>(this, SettingsClass);
+	Settings = NewObject<UPCGBuildingSettings>(this, SettingsClass);
 	Settings->Initialize(ActorOwner);
 	Run();
 }

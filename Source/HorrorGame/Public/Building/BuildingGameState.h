@@ -7,11 +7,11 @@
 #include "BuildingGameState.generated.h"
 
 
-class ARoom;
+class APCGRoom;
 class UPCGNode;
 class UPCGAlgorithm;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCurrentRoomChangedSignature, ARoom*, NewCurrentRoom);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCurrentRoomChangedSignature, APCGRoom*, NewCurrentRoom);
 
 UCLASS()
 class HORRORGAME_API ABuildingGameState : public AGameStateBase
@@ -28,15 +28,15 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable)
-	void SpawnRooms(UPCGNode* Root);
+	void SpawnRooms(UPCGBuildingNode* Root);
 
 public:
 	UPROPERTY(Transient, BlueprintReadWrite)
-	ARoom* CurrentRoom = nullptr;
+	APCGRoom* CurrentRoom = nullptr;
 	
 	UPROPERTY(BlueprintAssignable)
 	FOnCurrentRoomChangedSignature OnCurrentRoomChangedDelegate;
 
 	UFUNCTION(BlueprintNativeEvent)
-	void OnCurrentRoomChanged(ARoom* NewRoom);
+	void OnCurrentRoomChanged(APCGRoom* NewRoom);
 };

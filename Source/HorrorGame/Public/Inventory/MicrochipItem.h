@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Inventory/Item.h"
-#include "Building/Room.h"
+#include "Building/PCGRoom.h"
 #include "MicrochipItem.generated.h"
 
 UENUM(BlueprintType)
@@ -39,7 +39,7 @@ public:
 	void DisactivateCompatibility();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void OnRoomChanged(ARoom* Room);
+	void OnRoomChanged(APCGRoom* Room);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void ActivateRoomEffect();
@@ -48,5 +48,5 @@ public:
 	void DisactivateRoomEffect();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintPure)
-	bool ShouldActivateRoomEffect(ARoom* Room);
+	bool ShouldActivateRoomEffect(APCGRoom* Room);
 };

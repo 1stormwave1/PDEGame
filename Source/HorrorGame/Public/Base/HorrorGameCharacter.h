@@ -97,6 +97,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	float MovementCoefficient = 1.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bMovementBlocked = false;
+
 	UFUNCTION(BlueprintCallable)
 	void UpdateSpeedCoefficient(const float NewSpeedCoefficient = 1.f);
 	

@@ -2,22 +2,25 @@
 
 
 #include "Building/BuildingGameState.h"
-#include "Building/Room.h"
+#include "Building/PCGRoom.h"
 #include "Building/PCGAlgorithm.h"
-#include "Building/PCGNode.h"
+#include "Building/PCGBuildingNode.h"
 #include "Building/PCGTree.h"
 
 void ABuildingGameState::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PCGAlgorithm = NewObject<UPCGAlgorithm>(this, PCGAlgorithmClass);
-	PCGAlgorithm->Initialize(this);
+	if(PCGAlgorithmClass != nullptr)
+	{
+		PCGAlgorithm = NewObject<UPCGAlgorithm>(this, PCGAlgorithmClass);
+		PCGAlgorithm->Initialize(this);
 
-	SpawnRooms(PCGAlgorithm->MainTree->Root);
+		SpawnRooms(PCGAlgorithm->MainTree->Root);
+	}
 }
 
-void ABuildingGameState::SpawnRooms(UPCGNode* Root)
+void ABuildingGameState::SpawnRooms(UPCGBuildingNode* Root)
 {
 	if(Root == nullptr)
 	{
@@ -28,18 +31,18 @@ void ABuildingGameState::SpawnRooms(UPCGNode* Root)
 	Params.Instigator = GetWorld()->GetFirstPlayerController()->GetPawn();
 	Params.Owner = this;
 	
-	GetWorld()->SpawnActor<ARoom>(Root->RoomClass, Params);
-
+	//spawn room
+	
 	if(!Root->IsLeaf())
 	{
-		for(UPCGNode* Node : Root->ChildNodes)
+		for(UPCGBuildingNode* Node : Root->ChildNodes)
 		{
 			SpawnRooms(Node);
 		}
 	}
 }
 
-void ABuildingGameState::OnCurrentRoomChanged_Implementation(ARoom* NewRoom)
+void ABuildingGameState::OnCurrentRoomChanged_Implementation(APCGRoom* NewRoom)
 {
 	if(NewRoom != CurrentRoom)
 	{

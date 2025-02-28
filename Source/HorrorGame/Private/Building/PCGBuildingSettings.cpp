@@ -1,14 +1,14 @@
 
 
 
-#include "..\..\Public\Building\PCGBuildingSettings.h"
+#include "Building\PCGBuildingSettings.h"
 
-UWorld* UPCGSettings::GetWorld() const
+UWorld* UPCGBuildingSettings::GetWorld() const
 {
 	return ActorOwner != nullptr ? ActorOwner->GetWorld() : UObject::GetWorld();
 }
 
-void UPCGSettings::Initialize(AActor* Owner)
+void UPCGBuildingSettings::Initialize(AActor* Owner)
 {
 	ActorOwner = Owner;
 }

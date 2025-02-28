@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PCGSettings.generated.h"
+#include "PCGBuildingSettings.generated.h"
 
 
-class ARoom;
+class APCGRoom;
 
 UCLASS(BlueprintType, Blueprintable)
-class HORRORGAME_API UPCGSettings : public UObject
+class HORRORGAME_API UPCGBuildingSettings : public UObject
 {
 	GENERATED_BODY()
 
@@ -23,5 +23,5 @@ public:
 	void Initialize(AActor* Owner);
 
 	UPROPERTY(EditAnywhere)
-	TMap<TSubclassOf<ARoom>, float> RoomsProbabilitySpawn;
+	TMap<TSubclassOf<APCGRoom>, float> RoomsProbabilitySpawn;
 };

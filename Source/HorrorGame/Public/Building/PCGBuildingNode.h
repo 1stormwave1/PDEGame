@@ -3,22 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PCGNode.generated.h"
+#include "PCGBuildingNode.generated.h"
 
 
-class ARoom;
+
 
 UCLASS(BlueprintType, Blueprintable)
-class HORRORGAME_API UPCGNode : public UObject
+class HORRORGAME_API UPCGBuildingNode : public UObject
 {
 	GENERATED_BODY()
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<UPCGNode*> ChildNodes;
+	TArray<UPCGBuildingNode*> ChildNodes;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<ARoom> RoomClass;
+	
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsRoot = false;

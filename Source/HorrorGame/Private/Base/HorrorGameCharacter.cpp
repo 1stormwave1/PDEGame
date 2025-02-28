@@ -112,6 +112,11 @@ void AHorrorGameCharacter::Destroyed()
 
 void AHorrorGameCharacter::Move(const FInputActionValue& Value)
 {
+	if(bMovementBlocked)
+	{
+		return;
+	}
+	
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	if (Controller != nullptr)

@@ -22,7 +22,7 @@ void UMicrochipItem::DisactivateCompatibility_Implementation()
 	}
 }
 
-void UMicrochipItem::OnRoomChanged_Implementation(ARoom* Room)
+void UMicrochipItem::OnRoomChanged_Implementation(APCGRoom* Room)
 {
 	if(ShouldActivateRoomEffect(Room))
 	{
@@ -50,7 +50,7 @@ void UMicrochipItem::DisactivateRoomEffect_Implementation()
     }
 }
 
-bool UMicrochipItem::ShouldActivateRoomEffect_Implementation(ARoom* Room)
+bool UMicrochipItem::ShouldActivateRoomEffect_Implementation(APCGRoom* Room)
 {
 	return IsValid(Room) && CompatibleRoomTypes.Contains(Room->Type);
 }

@@ -6,7 +6,7 @@
 #include "PCGTree.generated.h"
 
 
-class UPCGNode;
+class UPCGBuildingNode;
 
 UCLASS(BlueprintType, Blueprintable)
 class HORRORGAME_API UPCGTree : public UObject
@@ -15,10 +15,10 @@ class HORRORGAME_API UPCGTree : public UObject
 
 public:
 	UPROPERTY(Transient, BlueprintReadWrite)
-	UPCGNode* Root = nullptr;
+	UPCGBuildingNode* Root = nullptr;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UPCGNode> NodeClass;
+	TSubclassOf<UPCGBuildingNode> NodeClass;
 
 	void Initialize();
 };

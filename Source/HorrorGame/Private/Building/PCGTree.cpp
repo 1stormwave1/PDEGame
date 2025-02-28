@@ -2,10 +2,9 @@
 
 
 #include "Building/PCGTree.h"
-
-#include "Building/PCGNode.h"
+#include "Building/PCGBuildingNode.h"
 
 void UPCGTree::Initialize()
 {
-	Root = NewObject<UPCGNode>(this, NodeClass);
+	Root = NewObject<UPCGBuildingNode>(this, NodeClass);
 }

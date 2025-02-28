@@ -8,7 +8,7 @@
 
 class UPCGTree;
 class ARoom;
-class UPCGSettings;
+class UPCGBuildingSettings;
 
 
 UCLASS(BlueprintType, Blueprintable)
@@ -18,10 +18,10 @@ class HORRORGAME_API UPCGAlgorithm : public UObject
 
 public:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UPCGSettings> SettingsClass;
+	TSubclassOf<UPCGBuildingSettings> SettingsClass;
 
 	UPROPERTY(BlueprintReadWrite, Transient)
-	UPCGSettings* Settings;
+	UPCGBuildingSettings* Settings;
 
 	UPROPERTY(BlueprintReadWrite, Transient)
 	AActor* ActorOwner = nullptr;
