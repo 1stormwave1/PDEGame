@@ -47,7 +47,13 @@ public:
 	ERoomType Type;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float WallSize = 100.f;
+	float WallWidth = 100.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float WallHeight = 100.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float WallThickness = 100.f;
 	
 	APCGRoom();
 
