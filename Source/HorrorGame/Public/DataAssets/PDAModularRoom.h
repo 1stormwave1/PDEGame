@@ -48,4 +48,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FRoomComponentData> RoomCeilings;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FRoomComponentData> Doors;
 };
