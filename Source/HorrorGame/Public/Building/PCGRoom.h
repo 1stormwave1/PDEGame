@@ -54,6 +54,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float WallThickness = 100.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Subdivisions = 3;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Seed = 0;
 	
 	APCGRoom();
 
