@@ -1,17 +1,28 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "BSPTree.generated.h"
 
-/**
- * 
- */
-UCLASS()
+USTRUCT(BlueprintType, Blueprintable)
+struct FBSPNode
+{
+	GENERATED_BODY()
+
+	
+};
+
+
+UCLASS(Blueprintable, BlueprintType)
 class HORRORGAME_API UBSPTree : public UObject
 {
 	GENERATED_BODY()
 	
+public:
+	UPROPERTY(EditAnywhere)
+	TArray<FBSPNode> Tree;
+	
+	UFUNCTION(BlueprintCallable)
+	void GetLeaves(TArray<FBSPNode>& OutLeaves);
 };

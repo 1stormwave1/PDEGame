@@ -1,17 +1,29 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Building/BSPTree.h"
 #include "Engine/DataAsset.h"
 #include "PDABSPTree.generated.h"
 
-/**
- * 
- */
+
 UCLASS()
 class HORRORGAME_API UPDABSPTree : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UBSPTree> TreeClass;
+
+	UPROPERTY(BlueprintReadWrite, Transient)
+	UBSPTree* Tree = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, Transient)
+	TArray<FBSPNode> RoomsData;
+	
+	UFUNCTION(BlueprintCallable)
+	void RetrieveRooms();
 	
 };
