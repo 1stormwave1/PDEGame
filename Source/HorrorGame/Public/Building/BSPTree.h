@@ -10,7 +10,10 @@ struct FBSPNode
 {
 	GENERATED_BODY()
 
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 ZoneIndex = -1;
+
+	FBSPNode(int32 NewZoneIndex = -1);
 };
 
 
@@ -25,4 +28,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void GetLeaves(TArray<FBSPNode>& OutLeaves);
+
+	UFUNCTION(BlueprintCallable)
+	void InitializeRandom(int32 RoomsCount, int32 AvailableZonesCount);
+
+	void PrescribeRoomIndex(int32 TreeIndex, int32 ZoneIndexToPrescribe, TArray<int32>& AvailableZoneIndexes);
 };

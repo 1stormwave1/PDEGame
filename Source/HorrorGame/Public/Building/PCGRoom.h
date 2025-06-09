@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "DataAssets/PDABSPTree.h"
 #include "GameFramework/Actor.h"
 #include "PCGRoom.generated.h"
 
@@ -60,6 +61,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Seed = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPDABSPTree* BSPTreeData = nullptr;
 	
 	APCGRoom();
 

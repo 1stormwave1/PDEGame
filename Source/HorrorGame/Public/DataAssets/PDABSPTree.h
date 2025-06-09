@@ -20,10 +20,16 @@ public:
 	UPROPERTY(BlueprintReadWrite, Transient)
 	UBSPTree* Tree = nullptr;
 
-	UPROPERTY(BlueprintReadWrite, Transient)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Transient)
 	TArray<FBSPNode> RoomsData;
 	
 	UFUNCTION(BlueprintCallable)
 	void RetrieveRooms();
+
+	UFUNCTION(BlueprintCallable)
+	void InitializeTree();
+
+	UFUNCTION(BlueprintCallable)
+	void InitializeRandomTree(int32 RoomsCount, int32 AvailableZonesCount);
 	
 };
