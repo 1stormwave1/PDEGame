@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "RoomTraitTree.h"
 #include "BSPTree.generated.h"
 
 USTRUCT(BlueprintType, Blueprintable)
@@ -12,6 +13,9 @@ struct FBSPNode
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 ZoneIndex = -1;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	URoomTraitTree* RoomTraitTree = nullptr;
 
 	FBSPNode(int32 NewZoneIndex = -1);
 };
