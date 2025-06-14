@@ -63,6 +63,9 @@ public:
 	int Seed = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SplineTransformationCoefficient = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UPDABSPTree* BSPTreeData = nullptr;
 	
 	APCGRoom();
