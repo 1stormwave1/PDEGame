@@ -38,45 +38,55 @@ void UBSPTree::InitializeRandom(int32 RoomsCount, int32 AvailableZonesCount)
 		AvailableZoneIndexes.Add(i);
 	}
 	
-	TArray<int32> AvailableIndexes;
-	for(int32 i = 0; i < RoomsCount; ++i)
-	{
-		const int32 AddedIndex = AvailableZoneIndexes[FMath::RandRange(0, AvailableZoneIndexes.Num() - 1)];
-
-		AvailableIndexes.Add(AddedIndex);
-		AvailableZoneIndexes.Remove(AddedIndex);
-	}
-	
 	const int32 NodesCount = 2 * RoomsCount - 1;
 	Tree.Empty(NodesCount);
 	Tree.SetNum(NodesCount);
+
+	if(Seed >= 0)
+	{
+		Stream.Initialize(Seed);
+	}
+	else
+	{
+		Stream.Initialize(NAME_None);
+	}
 	
-	const int32 AvailableRandomIndex = FMath::RandRange(0, AvailableIndexes.Num() - 1);
-	const int32 ZoneRandomIndex = AvailableIndexes[AvailableRandomIndex];
-	PrescribeRoomIndex(0, ZoneRandomIndex, AvailableIndexes);
+	const int32 ZoneIndexToPrescribe = AvailableZoneIndexes[Stream.RandRange(0, AvailableZoneIndexes.Num() - 1)];
+	PrescribeRoomIndex(0, ZoneIndexToPrescribe, AvailableZoneIndexes, 0, AvailableZoneIndexes.Num() - 1);
 }
 
-void UBSPTree::PrescribeRoomIndex(int32 TreeIndex, int32 ZoneIndexToPrescribe, TArray<int32>& AvailableZoneIndexes)
+void UBSPTree::PrescribeRoomIndex(int32 TreeIndex, int32 ZoneIndexToPrescribe, TArray<int32>& AvailableZoneIndexes, int32 LeftIndexMin, int32 RightIndexMax)
 {
 	if(!Tree.IsValidIndex(TreeIndex))
 	{
 		return;
 	}
-	
+
 	Tree[TreeIndex].ZoneIndex = ZoneIndexToPrescribe;
 	AvailableZoneIndexes.Remove(ZoneIndexToPrescribe);
 
 	const int32 LeftTreeIndex = 2 * TreeIndex + 1;
 	const int32 RightTreeIndex = 2 * TreeIndex + 2;
 
+	if(!Tree.IsValidIndex(LeftTreeIndex))
+	{
+		return;
+	}
+	if(!Tree.IsValidIndex(RightTreeIndex))
+	{
+		return;
+	}
+
 	if(!AvailableZoneIndexes.IsEmpty())
 	{
-		const int32 TreeIndexToPrescribeNewZoneIndex = FMath::RandBool() ? LeftTreeIndex : RightTreeIndex;
+		const int32 SeparatingIndex = (LeftIndexMin + RightIndexMax) / 2;
+		const int32 TreeIndexToPrescribeNewZoneIndex = ZoneIndexToPrescribe >= SeparatingIndex ? LeftTreeIndex : RightTreeIndex;
 		const int32 AnotherTreeIndex = TreeIndexToPrescribeNewZoneIndex == LeftTreeIndex ? RightTreeIndex : LeftTreeIndex;
-		const int32 AvailableRandomIndex = FMath::RandRange(0, AvailableZoneIndexes.Num() - 1);
-		const int32 ZoneRandomIndex = AvailableZoneIndexes[AvailableRandomIndex];
-
-		PrescribeRoomIndex(TreeIndexToPrescribeNewZoneIndex, ZoneRandomIndex, AvailableZoneIndexes);
-		PrescribeRoomIndex(AnotherTreeIndex, ZoneIndexToPrescribe, AvailableZoneIndexes);
+		const int32 NewRandomIndex = ZoneIndexToPrescribe >= SeparatingIndex ?
+			Stream.RandRange(LeftIndexMin, SeparatingIndex) :
+			Stream.RandRange(SeparatingIndex + 1, RightIndexMax);
+		
+		PrescribeRoomIndex(TreeIndexToPrescribeNewZoneIndex, NewRandomIndex, AvailableZoneIndexes, LeftIndexMin, SeparatingIndex);
+		PrescribeRoomIndex(AnotherTreeIndex, ZoneIndexToPrescribe, AvailableZoneIndexes, SeparatingIndex + 1, RightIndexMax);
 	}
 }
