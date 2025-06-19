@@ -63,8 +63,7 @@ void UBSPTree::PrescribeRoomIndex(int32 TreeIndex, int32 ZoneIndexToPrescribe, T
 	}
 
 	Tree[TreeIndex].ZoneIndex = ZoneIndexToPrescribe;
-	AvailableZoneIndexes.Remove(ZoneIndexToPrescribe);
-
+	
 	const int32 LeftTreeIndex = 2 * TreeIndex + 1;
 	const int32 RightTreeIndex = 2 * TreeIndex + 2;
 
@@ -80,13 +79,29 @@ void UBSPTree::PrescribeRoomIndex(int32 TreeIndex, int32 ZoneIndexToPrescribe, T
 	if(!AvailableZoneIndexes.IsEmpty())
 	{
 		const int32 SeparatingIndex = (LeftIndexMin + RightIndexMax) / 2;
-		const int32 TreeIndexToPrescribeNewZoneIndex = ZoneIndexToPrescribe >= SeparatingIndex ? LeftTreeIndex : RightTreeIndex;
-		const int32 AnotherTreeIndex = TreeIndexToPrescribeNewZoneIndex == LeftTreeIndex ? RightTreeIndex : LeftTreeIndex;
-		const int32 NewRandomIndex = ZoneIndexToPrescribe >= SeparatingIndex ?
+		const bool bIsNewIndexLeft = ZoneIndexToPrescribe >= SeparatingIndex;
+
+		const int32 TreeIndexToPrescribeNewZoneIndex = bIsNewIndexLeft ? LeftTreeIndex : RightTreeIndex;
+		const int32 AnotherTreeIndex = bIsNewIndexLeft ? RightTreeIndex : LeftTreeIndex;
+
+		int32 NewRandomIndex = -1;
+		while (!AvailableZoneIndexes.Contains(NewRandomIndex))
+		{
+			NewRandomIndex = bIsNewIndexLeft ?
 			Stream.RandRange(LeftIndexMin, SeparatingIndex) :
 			Stream.RandRange(SeparatingIndex + 1, RightIndexMax);
-		
-		PrescribeRoomIndex(TreeIndexToPrescribeNewZoneIndex, NewRandomIndex, AvailableZoneIndexes, LeftIndexMin, SeparatingIndex);
-		PrescribeRoomIndex(AnotherTreeIndex, ZoneIndexToPrescribe, AvailableZoneIndexes, SeparatingIndex + 1, RightIndexMax);
+		}
+		AvailableZoneIndexes.Remove(NewRandomIndex);
+
+		if(bIsNewIndexLeft)
+		{
+			PrescribeRoomIndex(TreeIndexToPrescribeNewZoneIndex, NewRandomIndex, AvailableZoneIndexes, LeftIndexMin, SeparatingIndex);
+			PrescribeRoomIndex(AnotherTreeIndex, ZoneIndexToPrescribe, AvailableZoneIndexes, SeparatingIndex + 1, RightIndexMax);
+		}
+		else
+		{
+			PrescribeRoomIndex(TreeIndexToPrescribeNewZoneIndex, NewRandomIndex, AvailableZoneIndexes, SeparatingIndex + 1, RightIndexMax);
+			PrescribeRoomIndex(AnotherTreeIndex, ZoneIndexToPrescribe, AvailableZoneIndexes, LeftIndexMin, SeparatingIndex);
+		}
 	}
 }
