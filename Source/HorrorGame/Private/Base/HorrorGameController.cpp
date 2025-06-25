@@ -112,7 +112,10 @@ void AHorrorGameController::OnItemStartUse()
 				return;
 			}
 		}
-		InventoryComponent->ClearQASlot(InventoryComponent->GetCurrentActiveSlotIndex());
+		if(InventoryComponent->GetCurrentActiveItem()->IsConsumable())
+		{
+			InventoryComponent->ClearQASlot(InventoryComponent->GetCurrentActiveSlotIndex());
+		}
 		CurrentItemActor->StartUseItem();
 	}
 }

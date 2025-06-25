@@ -49,6 +49,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsActivated = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsConsumable = true;
+
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsBurnOutPower = false;
 
@@ -105,4 +108,10 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	AHorrorGameState* GetGameState() const;
+
+	UFUNCTION(BlueprintPure)
+	AHorrorPlayerState* GetPlayerState() const;
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE bool IsConsumable() const { return bIsConsumable; }
 };

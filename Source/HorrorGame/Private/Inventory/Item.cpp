@@ -3,6 +3,7 @@
 
 #include "Inventory/Item.h"
 #include "Base/HorrorGameState.h"
+#include "Base/HorrorPlayerState.h"
 #include "Inventory/FillUpItem.h"
 
 UWorld* UItem::GetWorld() const
@@ -84,6 +85,11 @@ void UItem::PostInitProperties()
 AHorrorGameState* UItem::GetGameState() const
 {
 	return GetWorld() ? GetWorld()->GetGameState<AHorrorGameState>() : nullptr;
+}
+
+AHorrorPlayerState* UItem::GetPlayerState() const
+{
+	return GetWorld() ? GetWorld()->GetFirstPlayerController()->GetPlayerState<AHorrorPlayerState>() : nullptr;
 }
 
 void UItem::SetFormatArgs_Implementation()
