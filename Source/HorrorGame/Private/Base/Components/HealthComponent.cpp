@@ -23,6 +23,19 @@ void UHealthComponent::ChangeCurrentHealth(float DeltaHealth)
 	}
 }
 
+void UHealthComponent::ChangeMaxHealth(float DeltaHealth)
+{
+	MaxHealth += DeltaHealth;
+	CurrentHealth = FMath::Clamp(CurrentHealth, 0.f, MaxHealth);
+
+	OnMaxHealthChanged.Broadcast(MaxHealth);
+
+	if(CurrentHealth <= 0.f)
+	{
+		Die();
+	}
+}
+
 void UHealthComponent::Die_Implementation()
 {
 	OnDied.Broadcast();

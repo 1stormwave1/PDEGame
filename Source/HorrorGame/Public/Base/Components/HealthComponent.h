@@ -44,6 +44,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ChangeCurrentHealth(float DeltaHealth);
 
+	UFUNCTION(BlueprintCallable)
+	void ChangeMaxHealth(float DeltaHealth);
+
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void Die();
 	
