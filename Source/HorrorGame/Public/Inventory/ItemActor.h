@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ItemActor.generated.h"
 
+class URotatingMovementComponent;
 class UWidgetComponent;
 class UInteractionComponent;
 class UItem;
@@ -61,7 +62,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void OnInteractabilityChanged(bool bIsInteractable);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void InitializeItemOwner(bool bNewInitializeItemOwner);
 	
 };

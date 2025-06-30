@@ -5,6 +5,7 @@
 
 #include "Base/Components/InteractionComponent.h"
 #include "Components/WidgetComponent.h"
+#include "GameFramework/RotatingMovementComponent.h"
 #include "Inventory/Item.h"
 
 
@@ -33,7 +34,7 @@ AItemActor::AItemActor()
 	InteractionWidgetComponent->SetupAttachment(OffsetComponent);
 }
 
-void AItemActor::InitializeItemOwner(bool bNewInitializeItemOwner)
+void AItemActor::InitializeItemOwner_Implementation(bool bNewInitializeItemOwner)
 {
 	bInitializeItemOwner = bNewInitializeItemOwner;
 	if(bInitializeItemOwner && DefaultItemClass != nullptr)
