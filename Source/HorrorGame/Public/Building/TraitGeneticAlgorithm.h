@@ -7,28 +7,37 @@
 #include "TraitGeneticAlgorithm.generated.h"
 
 
+UENUM()
+enum class ERoomTypeEnum : uint8
+{
+	None,
+	Start,
+	Finish,
+	Transition
+};
+
 UCLASS(Blueprintable, BlueprintType)
 class HORRORGAME_API UTraitGeneticAlgorithm : public UObject
 {
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
-	ETraitEnum Trait = ETraitEnum::None;
+	ERoomTypeEnum Type = ERoomTypeEnum::None;
 
 	UPROPERTY(Transient)
-	TArray<URoomTraitTree*> TTreesPopulation;
+	TArray<URoomTraits*> TraitsPopulation;
 	
 public:
 	UFUNCTION(BlueprintCallable)
-	void InitializeByTrait(ETraitEnum NewTrait);
+	void InitializeByRoomType(ERoomTypeEnum NewRoomType);
 
 	UFUNCTION(BlueprintCallable)
 	void Initialize();
 
 	UFUNCTION(BlueprintCallable)
-	void Execute(TArray<URoomTraitTree*>& OutTTrees, int32 BestCount = 1);
+	void Execute(TArray<URoomTraits*>& OutTraits, int32 BestCount = 1);
 
 	UFUNCTION(BlueprintCallable)
-	FORCEINLINE ETraitEnum GetTrait() const { return Trait; }
+	FORCEINLINE ERoomTypeEnum GetRoomType() const { return Type; }
 	
 };

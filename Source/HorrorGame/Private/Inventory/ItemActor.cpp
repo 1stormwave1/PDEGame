@@ -32,6 +32,9 @@ AItemActor::AItemActor()
 
 	InteractionWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractionWidgetComponent"));
 	InteractionWidgetComponent->SetupAttachment(OffsetComponent);
+
+	InteractionHighlightComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("InteractionHighlightComponent"));
+	InteractionHighlightComponent->SetupAttachment(OffsetComponent);
 }
 
 void AItemActor::InitializeItemOwner_Implementation(bool bNewInitializeItemOwner)
@@ -42,6 +45,8 @@ void AItemActor::InitializeItemOwner_Implementation(bool bNewInitializeItemOwner
 		ItemOwner = NewObject<UItem>(this, DefaultItemClass);
 		InteractionComponent->ItemOwner = ItemOwner;
 	}
+
+	InteractionHighlightComponent->SetHiddenInGame(!bInitializeItemOwner);
 }
 
 void AItemActor::OnInteractabilityChanged_Implementation(bool bIsInteractable)

@@ -3,16 +3,16 @@
 
 #include "Building/TraitGeneticAlgorithm.h"
 
-void UTraitGeneticAlgorithm::InitializeByTrait(ETraitEnum NewTrait)
+void UTraitGeneticAlgorithm::InitializeByRoomType(ERoomTypeEnum NewRoomType)
 {
-	Trait = NewTrait;
+	Type = NewRoomType;
 }
 
 void UTraitGeneticAlgorithm::Initialize()
 {
 }
 
-void UTraitGeneticAlgorithm::Execute(TArray<URoomTraitTree*>& OutTTrees, int32 BestCount)
+void UTraitGeneticAlgorithm::Execute(TArray<URoomTraits*>& OutTraits, int32 BestCount)
 {
 	//OutTTrees.Empty(BestCount);
 }

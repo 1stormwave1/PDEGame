@@ -9,11 +9,9 @@ UENUM()
 enum class ETraitEnum : uint8
 {
 	None,
-	Start,
-	Finish,
-	Transition,
 	Treasure,
-	Dialogue
+	Dialogue,
+	Enemy
 };
 
 
@@ -34,11 +32,11 @@ struct FTTNode
 };
 
 UCLASS(Blueprintable, BlueprintType)
-class HORRORGAME_API URoomTraitTree : public UObject
+class HORRORGAME_API URoomTraits : public UObject
 {
 	GENERATED_BODY()
 
 public:
 	UPROPERTY(EditAnywhere)
-	TArray<FTTNode> Tree;
+	TArray<FTTNode> Traits;
 };

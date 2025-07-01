@@ -15,7 +15,7 @@ struct FBSPNode
 	int32 ZoneIndex = -1;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	URoomTraitTree* RoomTraitTree = nullptr;
+	URoomTraits* RoomTraits = nullptr;
 
 	FBSPNode(int32 NewZoneIndex = -1);
 };

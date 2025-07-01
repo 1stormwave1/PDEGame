@@ -59,12 +59,12 @@ void UPDABSPTree::ExecuteGeneticAlgorithm()
 
 	for(UTraitGeneticAlgorithm* GA : TTGeneticAlgorithms)
 	{
-		switch(GA->GetTrait())
+		switch(GA->GetRoomType())
 		{
-		case ETraitEnum::Start:
+		case ERoomTypeEnum::Start:
 			StartGA = GA;
 			break;
-		case ETraitEnum::Finish:
+		case ERoomTypeEnum::Finish:
 			FinishGA = GA;
 			break;
 		default:
@@ -77,10 +77,10 @@ void UPDABSPTree::ExecuteGeneticAlgorithm()
 		return;
 	}
 	
-	TArray<URoomTraitTree*> OutTraitTrees;
+	TArray<URoomTraits*> OutTraits;
 	
-	StartGA->Execute(OutTraitTrees, 1);
-	FinishGA->Execute(OutTraitTrees, 1);
+	StartGA->Execute(OutTraits, 1);
+	FinishGA->Execute(OutTraits, 1);
 
 	const int32 RoomsPerTransitionGA = (RoomsCount - 2) / (TTGeneticAlgorithms.Num() - 2);
 	
@@ -88,15 +88,15 @@ void UPDABSPTree::ExecuteGeneticAlgorithm()
 	{
 		if(GA != StartGA && GA != FinishGA)
 		{
-			GA->Execute(OutTraitTrees, RoomsPerTransitionGA);
+			GA->Execute(OutTraits, RoomsPerTransitionGA);
 		}
 	}
 
 	//shuffle OutTraitTree based on where start and finish should be in a tree
 	// [here]
 	
-	for(int32 i = 0; i < RoomsData.Num() && i < OutTraitTrees.Num(); ++i)
+	for(int32 i = 0; i < RoomsData.Num() && i < OutTraits.Num(); ++i)
 	{
-		RoomsData[i].RoomTraitTree = OutTraitTrees[i];
+		RoomsData[i].RoomTraits = OutTraits[i];
 	}
 }

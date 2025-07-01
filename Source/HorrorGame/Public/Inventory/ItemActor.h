@@ -32,6 +32,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<USceneComponent> OffsetComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UChildActorComponent> InteractionHighlightComponent;
+
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UItem> DefaultItemClass;
 
