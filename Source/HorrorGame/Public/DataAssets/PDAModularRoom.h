@@ -31,6 +31,18 @@ struct FRoomComponentData
 	FVector Offset;
 };
 
+USTRUCT(Blueprintable, BlueprintType)
+struct FRoomFloorClassByTraits
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AActor> FloorActorClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ERoomTypeEnum RoomType;
+};
+
 UCLASS()
 class HORRORGAME_API UPDAModularRoom : public UPrimaryDataAsset
 {
@@ -46,8 +58,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FRoomComponentData> RoomPillars;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Floor")
 	TArray<FRoomComponentData> RoomFloors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Floor")
+	TArray<FRoomFloorClassByTraits> RoomFloorClassesByTraits;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FRoomComponentData> RoomCeilings;

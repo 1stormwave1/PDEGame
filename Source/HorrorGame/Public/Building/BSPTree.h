@@ -18,6 +18,16 @@ struct FBSPNode
 	URoomTraits* RoomTraits = nullptr;
 
 	FBSPNode(int32 NewZoneIndex = -1);
+
+	friend bool operator==(const FBSPNode& Lhs, const FBSPNode& RHS)
+	{
+		return Lhs.ZoneIndex == RHS.ZoneIndex;
+	}
+
+	friend bool operator!=(const FBSPNode& Lhs, const FBSPNode& RHS)
+	{
+		return !(Lhs == RHS);
+	}
 };
 
 
@@ -37,6 +47,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void GetLeaves(TArray<FBSPNode>& OutLeaves);
+
+	void DFSFindLeaves(int32 LeftIndex, int32 RightIndex, TArray<FBSPNode>& OutLeaves);
 
 	UFUNCTION(BlueprintCallable)
 	void InitializeRandom(int32 RoomsCount, int32 AvailableZonesCount);

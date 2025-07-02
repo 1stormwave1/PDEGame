@@ -7,46 +7,60 @@
 
 void UPDABSPTree::RetrieveRooms()
 {
-	if(Tree != nullptr)
+	if(BSPTree != nullptr)
 	{
-		Tree->GetLeaves(RoomsData);
+		BSPTree->GetLeaves(RoomsData);
 	}
 }
 
 void UPDABSPTree::InitializeTree()
 {
-	if(Tree == nullptr)
+	if(BSPTree == nullptr)
 	{
-		Tree = NewObject<UBSPTree>(this, TreeClass);
+		BSPTree = NewObject<UBSPTree>(this, TreeClass);
 		RoomsData.Empty();
 	}
 }
 
 void UPDABSPTree::InitializeRandomTree(int32 RoomsCount, int32 AvailableZonesCount)
 {
-	if(Tree == nullptr)
+	if(BSPTree == nullptr)
 	{
-		Tree = NewObject<UBSPTree>(this, TreeClass);
+		BSPTree = NewObject<UBSPTree>(this, TreeClass);
 		RoomsData.Empty();
 	}
-	Tree->InitializeRandom(RoomsCount, AvailableZonesCount);
+	BSPTree->InitializeRandom(RoomsCount, AvailableZonesCount);
 }
 
 void UPDABSPTree::InitializeGeneticAlgorithm()
 {
 	const int32 RoomsCount = RoomsData.Num();
 
-	if(RoomsCount < TTGeneticAlgorithmClasses.Num())
+	if(RoomsCount < TGeneticAlgorithmClasses.Num())
 	{
 		return;
 	}
 
-	for(TSubclassOf<UTraitGeneticAlgorithm> GA : TTGeneticAlgorithmClasses)
+	if(!RoomsData.IsEmpty())
+	{
+		RoomsData[0].RoomTraits = StartRoomTraitsClass != nullptr ? NewObject<URoomTraits>(this, StartRoomTraitsClass) : nullptr;
+		RoomsData.Last().RoomTraits = FinishRoomTraitsClass != nullptr ? NewObject<URoomTraits>(this, FinishRoomTraitsClass) : nullptr;
+
+		if(TransitionRoomTraitsClass != nullptr)
+		{
+			for(int32 i = 1; i < RoomsData.Num() - 1; ++i)
+			{
+				RoomsData[i].RoomTraits = NewObject<URoomTraits>(this, TransitionRoomTraitsClass);
+			}
+		}
+	}
+	
+	for(TSubclassOf<UTraitGeneticAlgorithm> GA : TGeneticAlgorithmClasses)
 	{
 		UTraitGeneticAlgorithm* NewGA = NewObject<UTraitGeneticAlgorithm>(this, GA);
 		NewGA->Initialize();
 		
-		TTGeneticAlgorithms.Add(NewGA);
+		TGeneticAlgorithms.Add(NewGA);
 	}
 }
 
@@ -57,7 +71,7 @@ void UPDABSPTree::ExecuteGeneticAlgorithm()
 	UTraitGeneticAlgorithm* StartGA = nullptr;
 	UTraitGeneticAlgorithm* FinishGA = nullptr;
 
-	for(UTraitGeneticAlgorithm* GA : TTGeneticAlgorithms)
+	for(UTraitGeneticAlgorithm* GA : TGeneticAlgorithms)
 	{
 		switch(GA->GetRoomType())
 		{
@@ -82,9 +96,9 @@ void UPDABSPTree::ExecuteGeneticAlgorithm()
 	StartGA->Execute(OutTraits, 1);
 	FinishGA->Execute(OutTraits, 1);
 
-	const int32 RoomsPerTransitionGA = (RoomsCount - 2) / (TTGeneticAlgorithms.Num() - 2);
+	const int32 RoomsPerTransitionGA = (RoomsCount - 2) / (TGeneticAlgorithms.Num() - 2);
 	
-	for(UTraitGeneticAlgorithm* GA : TTGeneticAlgorithms)
+	for(UTraitGeneticAlgorithm* GA : TGeneticAlgorithms)
 	{
 		if(GA != StartGA && GA != FinishGA)
 		{

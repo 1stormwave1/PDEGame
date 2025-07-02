@@ -5,13 +5,22 @@
 #include "CoreMinimal.h"
 #include "RoomTraitTree.generated.h"
 
-UENUM()
+UENUM(BlueprintType)
 enum class ETraitEnum : uint8
 {
 	None,
 	Treasure,
 	Dialogue,
 	Enemy
+};
+
+UENUM(BlueprintType)
+enum class ERoomTypeEnum : uint8
+{
+	None,
+	Start,
+	Finish,
+	Transition
 };
 
 
@@ -37,6 +46,12 @@ class HORRORGAME_API URoomTraits : public UObject
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ERoomTypeEnum RoomType;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FTTNode> Traits;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void InitializeByRoomType(ERoomTypeEnum NewRoomType);
 };

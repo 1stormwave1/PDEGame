@@ -11,3 +11,8 @@ FTTNode::FTTNode(ETraitEnum NewTrait)
 FTTNode::FTTNode()
 {
 }
+
+void URoomTraits::InitializeByRoomType_Implementation(ERoomTypeEnum NewRoomType)
+{
+	RoomType = NewRoomType;
+}

@@ -7,15 +7,6 @@
 #include "TraitGeneticAlgorithm.generated.h"
 
 
-UENUM()
-enum class ERoomTypeEnum : uint8
-{
-	None,
-	Start,
-	Finish,
-	Transition
-};
-
 UCLASS(Blueprintable, BlueprintType)
 class HORRORGAME_API UTraitGeneticAlgorithm : public UObject
 {

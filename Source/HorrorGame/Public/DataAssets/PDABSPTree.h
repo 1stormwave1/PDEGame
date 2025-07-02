@@ -20,13 +20,22 @@ public:
 	TSubclassOf<UBSPTree> TreeClass;
 
 	UPROPERTY(BlueprintReadWrite, Transient)
-	UBSPTree* Tree = nullptr;
+	UBSPTree* BSPTree = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TSubclassOf<UTraitGeneticAlgorithm>> TTGeneticAlgorithmClasses;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Genetic Algorithm")
+	TArray<TSubclassOf<UTraitGeneticAlgorithm>> TGeneticAlgorithmClasses;
 
-	UPROPERTY(BlueprintReadWrite, Transient)
-	TArray<UTraitGeneticAlgorithm*> TTGeneticAlgorithms;
+	UPROPERTY(BlueprintReadWrite, Transient, Category="Genetic Algorithm")
+	TArray<UTraitGeneticAlgorithm*> TGeneticAlgorithms;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Genetic Algorithm")
+	TSubclassOf<URoomTraits> StartRoomTraitsClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Genetic Algorithm")
+	TSubclassOf<URoomTraits> FinishRoomTraitsClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Genetic Algorithm")
+	TSubclassOf<URoomTraits> TransitionRoomTraitsClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Transient)
 	TArray<FBSPNode> RoomsData;

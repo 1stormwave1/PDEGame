@@ -12,17 +12,20 @@ FBSPNode::FBSPNode(int32 NewZoneIndex)
 void UBSPTree::GetLeaves(TArray<FBSPNode>& OutLeaves)
 {
 	OutLeaves.Empty((Tree.Num() + 1) / 2);
+	DFSFindLeaves(0, 0, OutLeaves);
+}
 
-	for(int32 i = 0; i < Tree.Num(); ++i)
+void UBSPTree::DFSFindLeaves(int32 LeftIndex, int32 RightIndex, TArray<FBSPNode>& OutLeaves)
+{
+	if(LeftIndex >= Tree.Num() && RightIndex >= Tree.Num())
 	{
-		const int32 Left = 2 * i + 1;
-		const int32 Right = 2 * i + 2;
-
-		if(Left >= Tree.Num() && Right >= Tree.Num())
-		{
-			OutLeaves.Add(Tree[i]);
-		}
+		OutLeaves.AddUnique(Tree[(LeftIndex - 1) / 2]);
+		return;
 	}
+
+	DFSFindLeaves(2 * LeftIndex + 1, 2 * LeftIndex + 2, OutLeaves);
+	DFSFindLeaves(2 * RightIndex + 1, 2 * RightIndex + 2, OutLeaves);
+	
 }
 
 void UBSPTree::InitializeRandom(int32 RoomsCount, int32 AvailableZonesCount)
