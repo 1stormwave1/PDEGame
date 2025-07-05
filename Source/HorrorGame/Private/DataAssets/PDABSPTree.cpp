@@ -40,20 +40,6 @@ void UPDABSPTree::InitializeGeneticAlgorithm()
 	{
 		return;
 	}
-
-	if(!RoomsData.IsEmpty())
-	{
-		RoomsData[0].RoomTraits = StartRoomTraitsClass != nullptr ? NewObject<URoomTraits>(this, StartRoomTraitsClass) : nullptr;
-		RoomsData.Last().RoomTraits = FinishRoomTraitsClass != nullptr ? NewObject<URoomTraits>(this, FinishRoomTraitsClass) : nullptr;
-
-		if(TransitionRoomTraitsClass != nullptr)
-		{
-			for(int32 i = 1; i < RoomsData.Num() - 1; ++i)
-			{
-				RoomsData[i].RoomTraits = NewObject<URoomTraits>(this, TransitionRoomTraitsClass);
-			}
-		}
-	}
 	
 	for(TSubclassOf<UTraitGeneticAlgorithm> GA : TGeneticAlgorithmClasses)
 	{
@@ -61,6 +47,48 @@ void UPDABSPTree::InitializeGeneticAlgorithm()
 		NewGA->Initialize();
 		
 		TGeneticAlgorithms.Add(NewGA);
+	}
+}
+
+void UPDABSPTree::InitializeRoomTypes()
+{
+	if(RoomsData.IsEmpty() || BSPTree == nullptr)
+	{
+		return;
+	}
+
+	const bool bIsStartFromHead = FMath::RandBool();
+	const int32 IndexVariation = FMath::RoundToInt32(
+		RoomsData.Num() * FMath::Clamp(BSPTree->StartToFinishVariation, 0.f, 1.f));
+
+	int32 StartIndex = -1;
+	int32 FinishIndex = -1;
+	
+	if(bIsStartFromHead)
+	{
+		StartIndex = FMath::RandRange(0, IndexVariation);
+		FinishIndex = FMath::RandRange(RoomsData.Num() - IndexVariation - 1, RoomsData.Num() - 1);
+	}
+	else
+	{
+		FinishIndex = FMath::RandRange(0, IndexVariation);
+		StartIndex = FMath::RandRange(RoomsData.Num() - IndexVariation, RoomsData.Num() - 1);
+	}
+
+	RoomsData[StartIndex].RoomTraits = StartRoomTraitsClass != nullptr ? NewObject<URoomTraits>(this, StartRoomTraitsClass) : nullptr;
+	RoomsData[FinishIndex].RoomTraits = FinishRoomTraitsClass != nullptr ? NewObject<URoomTraits>(this, FinishRoomTraitsClass) : nullptr;
+
+
+	if(TransitionRoomTraitsClass == nullptr)
+	{
+		return;
+	}
+	for(FBSPNode& Node : RoomsData)
+	{
+		if(Node.RoomTraits == nullptr)
+		{
+			Node.RoomTraits = NewObject<URoomTraits>(this, TransitionRoomTraitsClass);
+		}
 	}
 }
 

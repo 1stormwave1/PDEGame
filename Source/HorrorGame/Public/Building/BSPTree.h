@@ -44,6 +44,9 @@ public:
 	int32 Seed = -1;
 
 	FRandomStream Stream;
+
+	UPROPERTY(EditAnywhere)
+	float StartToFinishVariation = 0.2f;
 	
 	UFUNCTION(BlueprintCallable)
 	void GetLeaves(TArray<FBSPNode>& OutLeaves);

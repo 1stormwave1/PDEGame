@@ -53,6 +53,9 @@ public:
 	void InitializeGeneticAlgorithm();
 
 	UFUNCTION(BlueprintCallable)
+	void InitializeRoomTypes();
+
+	UFUNCTION(BlueprintCallable)
 	void ExecuteGeneticAlgorithm();
 	
 };
