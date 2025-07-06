@@ -2,7 +2,11 @@
 
 
 #include "DataAssets/PDABSPTree.h"
+
+#include "Building/GeneticAlgorithmSave.h"
 #include "Building/TraitGeneticAlgorithm.h"
+#include "GameFramework/SaveGame.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetArrayLibrary.h"
 
 void UPDABSPTree::RetrieveRooms()
@@ -40,11 +44,31 @@ void UPDABSPTree::InitializeGeneticAlgorithm()
 	{
 		return;
 	}
+
+	if(USaveGame* SaveObject = UGameplayStatics::LoadGameFromSlot(GeneticAlgorithmSaveSlotName, 0))
+	{
+		GeneticAlgorithmSave = Cast<UGeneticAlgorithmSave>(SaveObject);
+	}
+
+	if(GeneticAlgorithmSave == nullptr)
+	{
+		GeneticAlgorithmSave =
+			Cast<UGeneticAlgorithmSave>(UGameplayStatics::CreateSaveGameObject(GeneticAlgorithmSaveClass));
+	}
 	
 	for(TSubclassOf<UTraitGeneticAlgorithm> GA : TGeneticAlgorithmClasses)
 	{
 		UTraitGeneticAlgorithm* NewGA = NewObject<UTraitGeneticAlgorithm>(this, GA);
-		NewGA->Initialize();
+
+		switch(NewGA->GetRoomType())
+		{
+		case ERoomTypeEnum::Transition:
+			NewGA->Initialize(GeneticAlgorithmSave, RoomsCount - 2);
+			break;
+		default:
+			NewGA->Initialize(GeneticAlgorithmSave);
+			break;
+		}
 		
 		TGeneticAlgorithms.Add(NewGA);
 	}
@@ -133,12 +157,26 @@ void UPDABSPTree::ExecuteGeneticAlgorithm()
 			GA->Execute(OutTraits, RoomsPerTransitionGA);
 		}
 	}
-
-	//shuffle OutTraitTree based on where start and finish should be in a tree
-	// [here]
+	UGameplayStatics::SaveGameToSlot(GeneticAlgorithmSave, GeneticAlgorithmSaveSlotName, 0);
 	
-	for(int32 i = 0; i < RoomsData.Num() && i < OutTraits.Num(); ++i)
+	for(int32 i = 0, j = 2; i < RoomsData.Num(); ++i)
 	{
-		RoomsData[i].RoomTraits = OutTraits[i];
+		switch(RoomsData[i].RoomTraits->RoomType)
+		{
+		case ERoomTypeEnum::Start:
+			RoomsData[i].RoomTraits = OutTraits[0];
+			break;
+		case ERoomTypeEnum::Finish:
+			RoomsData[i].RoomTraits = OutTraits[1];
+			break;
+		default:
+			RoomsData[i].RoomTraits = OutTraits[j];
+			if(++j > OutTraits.Num() - 1)
+			{
+				j = 2;
+			}
+			break;
+		}
+		
 	}
 }

@@ -8,6 +8,7 @@
 #include "PDABSPTree.generated.h"
 
 
+class UGeneticAlgorithmSave;
 class UTraitGeneticAlgorithm;
 
 UCLASS()
@@ -36,6 +37,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Genetic Algorithm")
 	TSubclassOf<URoomTraits> TransitionRoomTraitsClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Genetic Algorithm")
+	TSubclassOf<UGeneticAlgorithmSave> GeneticAlgorithmSaveClass;
+
+	UPROPERTY(BlueprintReadWrite, Transient, Category="Genetic Algorithm")
+	UGeneticAlgorithmSave* GeneticAlgorithmSave = nullptr;
+
+	UPROPERTY(BlueprintReadWrite, Transient, Category="Genetic Algorithm")
+	FString GeneticAlgorithmSaveSlotName = "GeneticAlgorithmSave";
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Transient)
 	TArray<FBSPNode> RoomsData;

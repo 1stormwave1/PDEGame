@@ -11,7 +11,8 @@ enum class ETraitEnum : uint8
 	None,
 	Treasure,
 	Dialogue,
-	Enemy
+	Enemy,
+	Light
 };
 
 UENUM(BlueprintType)
@@ -35,9 +36,47 @@ struct FTTNode
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Weight = 1.f;
 
+	friend bool operator==(const FTTNode& Lhs, const FTTNode& RHS)
+	{
+		return Lhs.Trait == RHS.Trait
+			&& Lhs.Weight == RHS.Weight;
+	}
+
+	friend bool operator!=(const FTTNode& Lhs, const FTTNode& RHS)
+	{
+		return !(Lhs == RHS);
+	}
+
+	FTTNode(const FTTNode& Other)
+		: Trait(Other.Trait),
+		  Weight(Other.Weight)
+	{
+	}
+
+	FTTNode& operator=(const FTTNode& Other)
+	{
+		if (this == &Other)
+			return *this;
+		Trait = Other.Trait;
+		Weight = Other.Weight;
+		return *this;
+	}
+
 	FTTNode(ETraitEnum NewTrait);
 
 	FTTNode();
+};
+
+USTRUCT(BlueprintType, Blueprintable)
+struct FTraitSpawnChance
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FTTNode Node;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SpawnChance = 1.f;
 };
 
 UCLASS(Blueprintable, BlueprintType)
@@ -52,6 +91,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FTTNode> Traits;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FTraitSpawnChance> DefaultTraitsSpawnChance;
+
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void InitializeByRoomType(ERoomTypeEnum NewRoomType);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void InitializeDefault();
+
+	
 };
