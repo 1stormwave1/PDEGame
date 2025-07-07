@@ -84,6 +84,13 @@ class HORRORGAME_API URoomTraits : public UObject
 {
 	GENERATED_BODY()
 
+	TArray<ETraitEnum> TraitEnums = {
+		ETraitEnum::Treasure,
+		ETraitEnum::Dialogue,
+		ETraitEnum::Enemy,
+		ETraitEnum::Light
+	};
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ERoomTypeEnum RoomType;
@@ -100,5 +107,21 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void InitializeDefault();
 
-	
+	UFUNCTION(BlueprintCallable)
+	float GetFitnessValue() const;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	URoomTraits* Crossover(URoomTraits* Other);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void Mutate(float GrowChance, float CutChance, int32 MinIterationCount, int32 MaxIterationCount);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void Grow();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void Cut();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void Alter();
 };

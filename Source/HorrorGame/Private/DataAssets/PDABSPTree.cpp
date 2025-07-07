@@ -38,6 +38,8 @@ void UPDABSPTree::InitializeRandomTree(int32 RoomsCount, int32 AvailableZonesCou
 
 void UPDABSPTree::InitializeGeneticAlgorithm()
 {
+	TGeneticAlgorithms.Empty();
+	
 	const int32 RoomsCount = RoomsData.Num();
 
 	if(RoomsCount < TGeneticAlgorithmClasses.Num())

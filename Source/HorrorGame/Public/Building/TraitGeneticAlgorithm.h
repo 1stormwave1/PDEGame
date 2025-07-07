@@ -6,7 +6,6 @@
 #include "RoomTraitTree.h"
 #include "TraitGeneticAlgorithm.generated.h"
 
-
 class UGeneticAlgorithmSave;
 
 UCLASS(Blueprintable, BlueprintType)
@@ -20,6 +19,19 @@ class HORRORGAME_API UTraitGeneticAlgorithm : public UObject
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<URoomTraits> RoomTraitsClass;
 
+	UPROPERTY(EditAnywhere)
+	float SelectionPercent = 0.5f;
+
+	UPROPERTY(EditAnywhere)
+	float CrossoverPercent = 0.7f;
+
+	UPROPERTY(EditAnywhere)
+	float MutateGrowChance = 0.33f;
+
+	UPROPERTY(EditAnywhere)
+	float MutateCutChance = 0.33f;
+	
+	
 	UPROPERTY(Transient)
 	TArray<URoomTraits*> TraitsPopulation;
 
@@ -35,6 +47,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void Execute(TArray<URoomTraits*>& OutTraits, int32 BestCount = 1);
+
+	UFUNCTION(BlueprintCallable)
+	void GetSortedPopulation(TArray<URoomTraits*>& OutPopulation);
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE ERoomTypeEnum GetRoomType() const { return Type; }
