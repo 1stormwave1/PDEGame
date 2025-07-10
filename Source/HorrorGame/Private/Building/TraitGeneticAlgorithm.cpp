@@ -68,13 +68,15 @@ void UTraitGeneticAlgorithm::Execute(TArray<URoomTraits*>& OutTraits, int32 Best
 	TArray<URoomTraits*> NewPopulation;
 	GetSortedPopulation(NewPopulation);
 
+	//implement roulette wheel selection ---
 	const int32 SelectedPopulationCount = FMath::RoundToInt32(NewPopulation.Num() * SelectionPercent);
 	for(;NewPopulation.Num() > SelectedPopulationCount;)
 	{
 		NewPopulation.Pop(false);
 	}
 	Algo::RandomShuffle(NewPopulation);
-
+	//--
+	
 	TArray<URoomTraits*> CrossoverPopulation = NewPopulation;
 	const int32 CrossoverPopulationCount = FMath::RoundToInt32(SelectedPopulationCount * CrossoverPercent);
 	for(;CrossoverPopulation.Num() > CrossoverPopulationCount;)

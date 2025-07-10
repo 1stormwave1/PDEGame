@@ -15,7 +15,8 @@ enum class EDisplayName : uint8
 	Main = 1,
 	Pause = 2,
 	Interaction = 3,
-	Dialogue = 4
+	Dialogue = 4,
+	Loading = 5
 };
 
 UENUM(BlueprintType)

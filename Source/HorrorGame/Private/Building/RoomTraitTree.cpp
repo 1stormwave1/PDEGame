@@ -27,17 +27,23 @@ void URoomTraits::Grow_Implementation()
 
 void URoomTraits::Cut_Implementation()
 {
-	const int32 RemoveIndex = FMath::RandRange(0, Traits.Num() - 1);
-	Traits.RemoveAt(RemoveIndex);
+	if(Traits.Num() > 1)
+	{
+		const int32 RemoveIndex = FMath::RandRange(0, Traits.Num() - 1);
+		Traits.RemoveAt(RemoveIndex);
+	}
 }
 
 void URoomTraits::Alter_Implementation()
 {
-	const int32 ChangeIndex = FMath::RandRange(0, Traits.Num() - 1);
-	const int32 NewTraitIndex = FMath::RandRange(0, TraitEnums.Num() - 1);
+	if(Traits.Num() > 0)
+	{
+		const int32 ChangeIndex = FMath::RandRange(0, Traits.Num() - 1);
+		const int32 NewTraitIndex = FMath::RandRange(0, TraitEnums.Num() - 1);
 
-	Traits[ChangeIndex].Trait = TraitEnums[NewTraitIndex];
-	Traits[ChangeIndex].Weight = FMath::RandRange(0.f, 1.f);
+		Traits[ChangeIndex].Trait = TraitEnums[NewTraitIndex];
+		Traits[ChangeIndex].Weight = FMath::RandRange(0.f, 1.f);
+	}
 }
 
 void URoomTraits::Mutate_Implementation(float GrowChance, float CutChance, int32 MinIterationCount, int32 MaxIterationCount)

@@ -6,6 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "HorrorGameGameMode.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPCGStageChangedSignature);
+
 UCLASS(minimalapi)
 class AHorrorGameGameMode : public AGameModeBase
 {
@@ -13,6 +15,12 @@ class AHorrorGameGameMode : public AGameModeBase
 
 public:
 	AHorrorGameGameMode();
+	
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnPCGStageChangedSignature OnPCGStarted;
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnPCGStageChangedSignature OnPCGFinished;
 };
 
 
