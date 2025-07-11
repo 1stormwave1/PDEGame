@@ -20,9 +20,6 @@ class HORRORGAME_API UTraitGeneticAlgorithm : public UObject
 	TSubclassOf<URoomTraits> RoomTraitsClass;
 
 	UPROPERTY(EditAnywhere)
-	float SelectionPercent = 0.5f;
-
-	UPROPERTY(EditAnywhere)
 	float CrossoverPercent = 0.7f;
 
 	UPROPERTY(EditAnywhere)
@@ -50,6 +47,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void GetSortedPopulation(TArray<URoomTraits*>& OutPopulation);
+
+	UFUNCTION(BlueprintCallable)
+	void RouletteWheelSelection(TArray<URoomTraits*>& OutPopulation);
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE ERoomTypeEnum GetRoomType() const { return Type; }

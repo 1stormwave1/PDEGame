@@ -124,4 +124,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Alter();
+
+	UFUNCTION(BlueprintCallable)
+	URoomTraits* GetCopy(UObject* Owner) const;
 };

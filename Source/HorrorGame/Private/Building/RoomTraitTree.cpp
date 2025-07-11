@@ -101,6 +101,16 @@ float URoomTraits::GetFitnessValue() const
 	return FitnessValue;
 }
 
+URoomTraits* URoomTraits::GetCopy(UObject* Owner) const
+{
+	URoomTraits* Copy = NewObject<URoomTraits>(Owner, GetClass());
+
+	Copy->Traits = Traits;
+	Copy->RoomType = RoomType;
+
+	return Copy;
+}
+
 void URoomTraits::InitializeDefault_Implementation()
 {
 	Traits.Empty();

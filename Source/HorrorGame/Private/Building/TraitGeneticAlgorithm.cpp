@@ -5,6 +5,7 @@
 
 #include "Algo/RandomShuffle.h"
 #include "Building/GeneticAlgorithmSave.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UTraitGeneticAlgorithm::InitializeByRoomType(ERoomTypeEnum NewRoomType)
 {
@@ -66,19 +67,10 @@ void UTraitGeneticAlgorithm::Execute(TArray<URoomTraits*>& OutTraits, int32 Best
 	}
 
 	TArray<URoomTraits*> NewPopulation;
-	GetSortedPopulation(NewPopulation);
-
-	//implement roulette wheel selection ---
-	const int32 SelectedPopulationCount = FMath::RoundToInt32(NewPopulation.Num() * SelectionPercent);
-	for(;NewPopulation.Num() > SelectedPopulationCount;)
-	{
-		NewPopulation.Pop(false);
-	}
-	Algo::RandomShuffle(NewPopulation);
-	//--
+	RouletteWheelSelection(NewPopulation);
 	
 	TArray<URoomTraits*> CrossoverPopulation = NewPopulation;
-	const int32 CrossoverPopulationCount = FMath::RoundToInt32(SelectedPopulationCount * CrossoverPercent);
+	const int32 CrossoverPopulationCount = FMath::RoundToInt32(NewPopulation.Num() * CrossoverPercent);
 	for(;CrossoverPopulation.Num() > CrossoverPopulationCount;)
 	{
 		CrossoverPopulation.Pop(false);
@@ -93,7 +85,7 @@ void UTraitGeneticAlgorithm::Execute(TArray<URoomTraits*>& OutTraits, int32 Best
 	}
 
 	TArray<URoomTraits*> MutatePopulation = NewPopulation;
-	const int32 MutatePopulationCount = SelectedPopulationCount - CrossoverPopulationCount;
+	const int32 MutatePopulationCount = NewPopulation.Num() - CrossoverPopulationCount;
 	for(;MutatePopulation.Num() > MutatePopulationCount;)
 	{
 		MutatePopulation.RemoveAt(0);
@@ -117,8 +109,39 @@ void UTraitGeneticAlgorithm::GetSortedPopulation(TArray<URoomTraits*>& OutPopula
 {
 	OutPopulation.Empty();
 	OutPopulation = TraitsPopulation;
-	OutPopulation.Sort([](const URoomTraits& Left, const URoomTraits& Right)//ascending order
+	OutPopulation.Sort([](const URoomTraits& Left, const URoomTraits& Right)//descending order
 	{
-		return Left.GetFitnessValue() < Right.GetFitnessValue();
+		return Left.GetFitnessValue() > Right.GetFitnessValue();
 	});
+}
+
+void UTraitGeneticAlgorithm::RouletteWheelSelection(TArray<URoomTraits*>& OutPopulation)
+{
+	TArray<float> Probabilities;
+	float FitnessSum = 0.f;
+	
+	for(const URoomTraits* RoomTraits : TraitsPopulation)
+	{
+		FitnessSum += RoomTraits->GetFitnessValue();
+	}
+
+	float CumulativeProbability = 0.f;
+	for(const URoomTraits* RoomTraits : TraitsPopulation)
+	{
+		Probabilities.Add(CumulativeProbability);
+		CumulativeProbability += RoomTraits->GetFitnessValue() / FitnessSum;
+	}
+	Probabilities.Add(CumulativeProbability);
+
+	for(int32 i = 0; i < TraitsPopulation.Num(); ++i)
+	{
+		const float RandomValue = FMath::RandRange(0.f, 1.f);
+		for(int32 j = 0; j < Probabilities.Num() - 1; ++j)
+		{
+			if(RandomValue >= Probabilities[j] && RandomValue < Probabilities[j + 1])
+			{
+				OutPopulation.Add(TraitsPopulation[j]->GetCopy(this));
+			}
+		}
+	}
 }
