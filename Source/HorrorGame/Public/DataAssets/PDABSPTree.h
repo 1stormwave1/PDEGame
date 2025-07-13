@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Building/BSPTree.h"
 #include "Engine/DataAsset.h"
+
 #include "PDABSPTree.generated.h"
 
 
@@ -49,6 +50,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Transient)
 	TArray<FBSPNode> RoomsData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FTraitsData> TraitsData;
 	
 	UFUNCTION(BlueprintCallable)
 	void RetrieveRooms();

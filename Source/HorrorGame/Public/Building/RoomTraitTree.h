@@ -12,6 +12,7 @@ enum class ETraitEnum : uint8
 	Treasure,
 	Dialogue,
 	Enemy,
+	Trap,
 	Light
 };
 
@@ -79,15 +80,29 @@ struct FTraitSpawnChance
 	float SpawnChance = 1.f;
 };
 
+USTRUCT(Blueprintable, BlueprintType)
+struct FTraitsData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ETraitEnum Trait = ETraitEnum::None;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<TSubclassOf<AActor>, float> ActorClassSpawnChance;
+	
+};
+
 UCLASS(Blueprintable, BlueprintType)
 class HORRORGAME_API URoomTraits : public UObject
 {
 	GENERATED_BODY()
 
-	TArray<ETraitEnum> TraitEnums = {
+	inline static const TArray<ETraitEnum> TraitEnums = {
 		ETraitEnum::Treasure,
 		ETraitEnum::Dialogue,
 		ETraitEnum::Enemy,
+		ETraitEnum::Trap,
 		ETraitEnum::Light
 	};
 
