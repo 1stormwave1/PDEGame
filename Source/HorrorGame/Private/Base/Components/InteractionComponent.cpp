@@ -19,8 +19,11 @@ void UInteractionComponent::BeginPlay()
 	
 	OnComponentBeginOverlap.AddDynamic(this, &UInteractionComponent::BeginOverlap);
 	OnComponentEndOverlap.AddDynamic(this, &UInteractionComponent::EndOverlap);
-	
-	CheckOverlap(MainController->GetPawn());
+
+	if(MainController != nullptr)
+	{
+		CheckOverlap(MainController->GetPawn());
+	}
 }
 
 UInteractionComponent::UInteractionComponent()
@@ -39,16 +42,17 @@ void UInteractionComponent::CheckOverlap_Implementation(AActor* OtherActor)
 	{
 		return;
 	}
+
+	if(!IsValid(MainController))
+	{
+		return;
+	}
 	
 	if(MainController->GetInventoryComponent()->DoesContainItem(ItemOwner))
 	{
 		return;
 	}
 
-	if(!IsValid(MainController))
-	{
-		return;
-	}
 	
 	if(IsOverlappingActor(OtherActor) && OtherActor == MainController->GetPawn())
 	{
@@ -61,12 +65,12 @@ void UInteractionComponent::CheckOverlap_Implementation(AActor* OtherActor)
 void UInteractionComponent::EndOverlap_Implementation(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
                                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if(MainController->GetInventoryComponent()->DoesContainItem(ItemOwner))
+	if(!IsValid(MainController))
 	{
 		return;
 	}
 	
-	if(!IsValid(MainController))
+	if(MainController->GetInventoryComponent()->DoesContainItem(ItemOwner))
 	{
 		return;
 	}

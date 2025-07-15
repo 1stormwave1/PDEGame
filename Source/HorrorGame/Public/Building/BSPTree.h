@@ -37,10 +37,10 @@ class HORRORGAME_API UBSPTree : public UObject
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<FBSPNode> Tree;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 Seed = -1;
 
 	FRandomStream Stream;
