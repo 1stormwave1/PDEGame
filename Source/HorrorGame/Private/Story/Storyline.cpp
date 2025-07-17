@@ -3,6 +3,11 @@
 
 #include "Story/Storyline.h"
 
+#include "Base/HorrorGameInstance.h"
+#include "Base/MainSaveGame.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "Kismet/GameplayStatics.h"
+
 UBehaviorTree* UStoryline::GetDialogueTreeByName(const FString& DialogueOwnerName)
 {
 	if(Steps.IsValidIndex(CurrentStepIndex))
@@ -103,5 +108,18 @@ void UStoryline::SetCurrentStepDialogueDone_Implementation(const FString& Dialog
 
 void UStoryline::ContinueStoryline_Implementation()
 {
-	OnStorylineContinued.Broadcast(++CurrentStepIndex);
+	if(++CurrentStepIndex >= Steps.Num())
+	{
+		CurrentStepIndex = 0;
+	}
+	UGameInstance* GI = UGameplayStatics::GetGameInstance(Steps[CurrentStepIndex].Dialogues[0].DialogueTree->GetWorld());
+	if(const UHorrorGameInstance* HorrorGI = Cast<UHorrorGameInstance>(GI))
+	{
+		if(HorrorGI->MainSaveGame != nullptr)
+		{
+			HorrorGI->MainSaveGame->MainStoryStep = CurrentStepIndex;
+		}
+	}
+	
+	OnStorylineContinued.Broadcast(CurrentStepIndex);
 }

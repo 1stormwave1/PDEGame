@@ -15,7 +15,10 @@ enum class ETraitEnum : uint8
 	Trap,
 	Light,
 	Pillar,
-	Block
+	Block,
+	GlobalCollectable,
+	Explore,
+	Flashlight
 };
 
 UENUM(BlueprintType)
@@ -107,7 +110,10 @@ class HORRORGAME_API URoomTraits : public UObject
 		ETraitEnum::Trap,
 		ETraitEnum::Light,
 		ETraitEnum::Pillar,
-		ETraitEnum::Block
+		ETraitEnum::Block,
+		ETraitEnum::GlobalCollectable,
+		ETraitEnum::Explore,
+		ETraitEnum::Flashlight
 	};
 
 public:

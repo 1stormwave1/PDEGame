@@ -2,14 +2,25 @@
 
 
 #include "Base/HorrorGameInstance.h"
-
-#include "Base/Components/DialogueComponent.h"
+#include "Base/MainSaveGame.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "Kismet/GameplayStatics.h"
 #include "Story/Storyline.h"
 
 void UHorrorGameInstance::Init()
 {
 	Super::Init();
+
+	if(USaveGame* SaveObject = UGameplayStatics::LoadGameFromSlot(MainSaveGameSlotName, 0))
+	{
+		MainSaveGame = Cast<UMainSaveGame>(SaveObject);
+	}
+
+	if(MainSaveGame == nullptr && MainSaveGameClass != nullptr)
+	{
+		MainSaveGame =
+			Cast<UMainSaveGame>(UGameplayStatics::CreateSaveGameObject(MainSaveGameClass));
+	}
 }
 
 UStoryline* UHorrorGameInstance::GetStorylineByName(const FString& StorylineName)
@@ -73,6 +84,26 @@ void UHorrorGameInstance::GetParticipatedStorylines(const FString& DialogueOwner
 	}
 }
 
+void UHorrorGameInstance::AddCollectedItem(int32 Count)
+{
+	if(MainSaveGame != nullptr)
+	{
+		MainSaveGame->BuildingItemsCollected += Count;
+
+		//UGameplayStatics::SaveGameToSlot(MainSaveGame, MainSaveGameSlotName, 0);
+	}
+}
+
+void UHorrorGameInstance::AddCollectableGlobal(int32 Count)
+{
+	if(MainSaveGame != nullptr)
+	{
+		MainSaveGame->GlobalItemCollected += Count;
+
+		UGameplayStatics::SaveGameToSlot(MainSaveGame, MainSaveGameSlotName, 0);
+	}
+}
+
 void UHorrorGameInstance::InitStory_Implementation(bool bAllowReInit)
 {
 	if(bAllowReInit || Storylines.IsEmpty())
@@ -80,7 +111,12 @@ void UHorrorGameInstance::InitStory_Implementation(bool bAllowReInit)
 		Storylines.Empty(StorylineClasses.Num());
 		for(TSubclassOf<UStoryline> StorylineClass : StorylineClasses)
 		{
-			Storylines.Add(NewObject<UStoryline>(this, StorylineClass));
+			UStoryline* MainStory = NewObject<UStoryline>(this, StorylineClass);
+			if(MainSaveGame != nullptr)
+			{
+				MainStory->CurrentStepIndex = MainSaveGame->MainStoryStep;
+			}
+			Storylines.Add(MainStory);
 		}
 	}
 }

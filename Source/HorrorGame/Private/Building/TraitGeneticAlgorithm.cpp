@@ -3,9 +3,7 @@
 
 #include "Building/TraitGeneticAlgorithm.h"
 
-#include "Algo/RandomShuffle.h"
 #include "Building/GeneticAlgorithmSave.h"
-#include "Kismet/KismetMathLibrary.h"
 
 void UTraitGeneticAlgorithm::InitializeByRoomType(ERoomTypeEnum NewRoomType)
 {

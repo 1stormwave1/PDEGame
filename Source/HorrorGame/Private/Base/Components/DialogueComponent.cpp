@@ -109,6 +109,8 @@ void UDialogueComponent::StartDialogue_Implementation()
 	}
 	DialogueStartData.bIsPersistent = CurrentDialogueBehaviourTree == PersistentDialogueBehaviourTree;
 
+	ParticipatedStorylines[CurrentStorylineIndex]->ContinueStoryline();
+
 	OnDialogueStarted.Broadcast(DialogueStartData);
 }
 

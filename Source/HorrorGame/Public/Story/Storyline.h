@@ -45,11 +45,10 @@ class HORRORGAME_API UStoryline : public UObject
 {
 	GENERATED_BODY()
 
-protected:
+public:
 	UPROPERTY(BlueprintReadWrite)
 	int CurrentStepIndex = 0;
-
-public:
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FStorylineStep> Steps;
 	
