@@ -13,7 +13,9 @@ enum class ETraitEnum : uint8
 	Dialogue,
 	Enemy,
 	Trap,
-	Light
+	Light,
+	Pillar,
+	Block
 };
 
 UENUM(BlueprintType)
@@ -103,7 +105,9 @@ class HORRORGAME_API URoomTraits : public UObject
 		ETraitEnum::Dialogue,
 		ETraitEnum::Enemy,
 		ETraitEnum::Trap,
-		ETraitEnum::Light
+		ETraitEnum::Light,
+		ETraitEnum::Pillar,
+		ETraitEnum::Block
 	};
 
 public:

@@ -98,6 +98,8 @@ float URoomTraits::GetFitnessValue() const
 		FitnessValue += Node.Weight;
 	}
 
+	FitnessValue /= Traits.Num();
+
 	return FitnessValue;
 }
 
