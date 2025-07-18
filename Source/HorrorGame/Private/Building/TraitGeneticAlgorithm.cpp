@@ -95,7 +95,8 @@ void UTraitGeneticAlgorithm::Execute(TArray<URoomTraits*>& OutTraits, int32 Best
 		TraitsPopulation.Add(Traits);
 	}
 
-	GetSortedPopulation(NewPopulation);
+	GetSortedPopulationByFitnessValue(NewPopulation);
+	
 	for(int32 i = 0; i < BestCount; ++i)
 	{
 		OutTraits.Add(NewPopulation[i]);
@@ -103,7 +104,7 @@ void UTraitGeneticAlgorithm::Execute(TArray<URoomTraits*>& OutTraits, int32 Best
 	}
 }
 
-void UTraitGeneticAlgorithm::GetSortedPopulation(TArray<URoomTraits*>& OutPopulation)
+void UTraitGeneticAlgorithm::GetSortedPopulationByFitnessValue(TArray<URoomTraits*>& OutPopulation)
 {
 	OutPopulation.Empty();
 	OutPopulation = TraitsPopulation;

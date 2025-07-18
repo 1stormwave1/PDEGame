@@ -60,7 +60,7 @@ class HORRORGAME_API UDialogueComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-protected:
+public:
 	UPROPERTY(BlueprintReadWrite, Transient)
 	TArray<UStoryline*> ParticipatedStorylines;
 

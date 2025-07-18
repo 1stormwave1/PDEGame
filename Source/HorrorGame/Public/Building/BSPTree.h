@@ -41,6 +41,9 @@ public:
 	TArray<FBSPNode> Tree;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool bAllowReinitializeFromRandom = true;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 Seed = -1;
 
 	FRandomStream Stream;

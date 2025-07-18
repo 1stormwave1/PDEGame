@@ -20,10 +20,10 @@ UDialogueComponent::UDialogueComponent()
 void UDialogueComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	CurrentController = GetOwner<ANPCController>();
 
-	UHorrorGameInstance* GameInstance =
+	/*UHorrorGameInstance* GameInstance =
 		Cast<UHorrorGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 
 	if(IsValid(CurrentController) && IsValid(GameInstance))
@@ -36,7 +36,7 @@ void UDialogueComponent::BeginPlay()
 		}
 	}
 
-	UpdateCurrentDialogue();
+	UpdateCurrentDialogue();*/
 }
 
 void UDialogueComponent::UpdateCurrentDialogue_Implementation()
@@ -89,6 +89,8 @@ void UDialogueComponent::NextStepDialogue_Implementation(FDialogueStepData Dialo
 
 void UDialogueComponent::StartDialogue_Implementation()
 {
+	CurrentController = GetOwner<ANPCController>();
+	
 	if(CurrentController != nullptr)
 	{
 		if(CurrentController->GetBrainComponent() != nullptr && CurrentController->GetBrainComponent()->IsRunning())
@@ -136,8 +138,11 @@ void UDialogueComponent::EndDialogue_Implementation(bool bTerminate)
 
 void UDialogueComponent::ReceiveResponse_Implementation(const FText& Response)
 {
-	CurrentBlackboard->SetValueAsBool(IsNextStepReadyKeyName, true);
-	CurrentBlackboard->SetValueAsString(ResponseKeyName, Response.ToString());
+	if(IsValid(CurrentBlackboard))
+	{
+		CurrentBlackboard->SetValueAsBool(IsNextStepReadyKeyName, true);
+		CurrentBlackboard->SetValueAsString(ResponseKeyName, Response.ToString());
 
-	OnDialogueResponseReceived.Broadcast(Response);
+		OnDialogueResponseReceived.Broadcast(Response);
+	}
 }

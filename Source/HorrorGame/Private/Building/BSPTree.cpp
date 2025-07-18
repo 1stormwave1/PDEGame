@@ -30,7 +30,7 @@ void UBSPTree::DFSFindLeaves(int32 LeftIndex, int32 RightIndex, TArray<FBSPNode>
 
 void UBSPTree::InitializeRandom(int32 RoomsCount, int32 AvailableZonesCount)
 {
-	if(!Tree.IsEmpty())
+	if(!Tree.IsEmpty() && !bAllowReinitializeFromRandom)
 	{
 		return;
 	}

@@ -18,6 +18,7 @@ enum class ETraitEnum : uint8
 	Block,
 	GlobalCollectable,
 	Explore,
+	ExploreBorder,
 	Flashlight
 };
 
@@ -113,6 +114,7 @@ class HORRORGAME_API URoomTraits : public UObject
 		ETraitEnum::Block,
 		ETraitEnum::GlobalCollectable,
 		ETraitEnum::Explore,
+		ETraitEnum::ExploreBorder,
 		ETraitEnum::Flashlight
 	};
 

@@ -46,7 +46,7 @@ public:
 	void Execute(TArray<URoomTraits*>& OutTraits, int32 BestCount = 1);
 
 	UFUNCTION(BlueprintCallable)
-	void GetSortedPopulation(TArray<URoomTraits*>& OutPopulation);
+	void GetSortedPopulationByFitnessValue(TArray<URoomTraits*>& OutPopulation);
 
 	UFUNCTION(BlueprintCallable)
 	void RouletteWheelSelection(TArray<URoomTraits*>& OutPopulation);
