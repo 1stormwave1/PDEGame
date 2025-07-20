@@ -19,7 +19,6 @@ void UGeneticAlgorithmSave::AddRoomTraitsToSave(URoomTraits* RoomTraits)
 	FSavedRoomTraits NewSavedRoomTraits;
 	NewSavedRoomTraits.RoomTraits = RoomTraits->Traits;
 	NewSavedRoomTraits.RoomType = RoomTraits->RoomType;
-	NewSavedRoomTraits.SaveTime = FDateTime::Now();
 
 	SavedRoomTraits.Add(NewSavedRoomTraits);
 }

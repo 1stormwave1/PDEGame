@@ -17,9 +17,6 @@ struct FSavedRoomTraits
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ERoomTypeEnum RoomType;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FDateTime SaveTime;
 };
 
 

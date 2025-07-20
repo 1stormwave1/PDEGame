@@ -1,17 +1,20 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
+#include "BehaviourAnalysis.h"
 #include "BehaviourSaveGame.generated.h"
 
-/**
- * 
- */
-UCLASS()
+
+UCLASS(Blueprintable, BlueprintType)
 class HORRORGAME_API UBehaviourSaveGame : public USaveGame
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(BlueprintReadWrite)
+	TArray<FBehaviourVector> BehaviourData;
 	
 };
