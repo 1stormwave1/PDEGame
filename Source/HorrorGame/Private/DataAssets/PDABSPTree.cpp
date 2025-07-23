@@ -3,6 +3,7 @@
 
 #include "DataAssets/PDABSPTree.h"
 
+#include "Building/BehaviourAnalysis.h"
 #include "Building/GeneticAlgorithmSave.h"
 #include "Building/TraitGeneticAlgorithm.h"
 #include "GameFramework/SaveGame.h"
@@ -65,10 +66,10 @@ void UPDABSPTree::InitializeGeneticAlgorithm()
 		switch(NewGA->GetRoomType())
 		{
 		case ERoomTypeEnum::Transition:
-			NewGA->Initialize(GeneticAlgorithmSave, RoomsCount - 2);
+			NewGA->Initialize(GeneticAlgorithmSave, BehaviourAnalysis, RoomsCount - 2);
 			break;
 		default:
-			NewGA->Initialize(GeneticAlgorithmSave);
+			NewGA->Initialize(GeneticAlgorithmSave, BehaviourAnalysis);
 			break;
 		}
 		
@@ -181,4 +182,24 @@ void UPDABSPTree::ExecuteGeneticAlgorithm()
 		}
 		
 	}
+}
+
+void UPDABSPTree::InitializeBehaviourAnalysis()
+{
+	if(BehaviourAnalysisClass == nullptr)
+	{
+		return;
+	}
+	
+	BehaviourAnalysis = NewObject<UBehaviourAnalysis>(this, BehaviourAnalysisClass);
+	BehaviourAnalysis->Initialize();
+}
+
+void UPDABSPTree::ExecuteBehaviourAnalysis()
+{
+	if(BehaviourAnalysis == nullptr)
+	{
+		return;
+	}
+	BehaviourAnalysis->Execute();
 }

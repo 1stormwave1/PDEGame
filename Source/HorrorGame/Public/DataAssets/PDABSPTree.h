@@ -9,6 +9,7 @@
 #include "PDABSPTree.generated.h"
 
 
+class UBehaviourAnalysis;
 class UGeneticAlgorithmSave;
 class UTraitGeneticAlgorithm;
 
@@ -53,6 +54,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FTraitsData> TraitsData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UBehaviourAnalysis> BehaviourAnalysisClass;
+
+	UPROPERTY(Transient, BlueprintReadWrite)
+	UBehaviourAnalysis* BehaviourAnalysis = nullptr;
 	
 	UFUNCTION(BlueprintCallable)
 	void RetrieveRooms();
@@ -71,5 +78,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ExecuteGeneticAlgorithm();
+
+	UFUNCTION(BlueprintCallable)
+	void InitializeBehaviourAnalysis();
+
+	UFUNCTION(BlueprintCallable)
+	void ExecuteBehaviourAnalysis();
 	
 };

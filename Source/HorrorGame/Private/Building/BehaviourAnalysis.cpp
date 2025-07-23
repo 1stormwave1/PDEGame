@@ -3,11 +3,9 @@
 
 #include "Building/BehaviourAnalysis.h"
 
-#include "Algo/MaxElement.h"
 #include "Building/BehaviourSaveGame.h"
 #include "GameFramework/SaveGame.h"
 #include "Kismet/GameplayStatics.h"
-#include "UObject/UnrealTypePrivate.h"
 
 void UBehaviourAnalysis::Initialize()
 {
@@ -22,7 +20,10 @@ void UBehaviourAnalysis::Initialize()
 			Cast<UBehaviourSaveGame>(UGameplayStatics::CreateSaveGameObject(BehaviourSaveGameClass));
 	}
 
-	BehaviourData = BehaviourSaveGame->BehaviourData;
+	if(!BehaviourSaveGame->BehaviourData.IsEmpty())
+	{
+		BehaviourData = BehaviourSaveGame->BehaviourData;
+	}
 }
 
 void UBehaviourAnalysis::SetCurrentCellsOverlappedPercentage(int32 AllCount, int32 PercentageCount)
@@ -80,8 +81,11 @@ void UBehaviourAnalysis::Execute()
 	{
 		return;
 	}
-	
-	FuzzyCMeans(4);
+
+	TArray<TArray<float>> FCMMatrix;
+	TArray<TArray<float>> Centroids;
+	FuzzyCMeans(FCMMatrix, Centroids, 4);
+	InterpretClusterResult(Centroids, FCMMatrix);
 }
 
 void UBehaviourAnalysis::AddCurrentBehaviour()
@@ -92,25 +96,21 @@ void UBehaviourAnalysis::AddCurrentBehaviour()
 	UGameplayStatics::SaveGameToSlot(BehaviourSaveGame, BehaviourSaveGameSlotName, 0);
 }
 
-void UBehaviourAnalysis::FuzzyCMeans(int32 ClustersCount)
+void UBehaviourAnalysis::FuzzyCMeans(TArray<TArray<float>>& FCMMatrix, TArray<TArray<float>>& Centroids, int32 ClustersCount)
 {
-	TArray<TArray<float>> FCMMatrix;
 	TArray<TArray<float>> NewFCMMatrix;
 	InitializeFCMMatrix(NewFCMMatrix, ClustersCount);
 
 	do
 	{
 		FCMMatrix = NewFCMMatrix;
-		TArray<TArray<float>> Centroids;
 		TArray<TArray<float>> DistancesToCentroids;
 		
 		CalculateCentroids(Centroids, FCMMatrix);
 		CalculateDistancesToCentroids(DistancesToCentroids, Centroids);
 		CalculateNewFCMMatrix(NewFCMMatrix, DistancesToCentroids);
 	}
-	while (GetTolerance(FCMMatrix, NewFCMMatrix) > 0.01f);
-
-	//
+	while (GetTolerance(FCMMatrix, NewFCMMatrix) > Tolerance);
 }
 
 void UBehaviourAnalysis::InitializeFCMMatrix(TArray<TArray<float>>& FCMMatrix, int32 ClusterCount)
@@ -134,6 +134,8 @@ void UBehaviourAnalysis::InitializeFCMMatrix(TArray<TArray<float>>& FCMMatrix, i
 void UBehaviourAnalysis::CalculateCentroids(TArray<TArray<float>>& OutCentroids,
 	const TArray<TArray<float>>& FCMMatrix)
 {
+	OutCentroids.Empty();
+	
 	TArray<TArray<float>> BehaviourDataRow;
 	GetRawBehaviourData(BehaviourDataRow);
 	
@@ -161,7 +163,7 @@ void UBehaviourAnalysis::CalculateCentroids(TArray<TArray<float>>& OutCentroids,
 	}
 }
 
-void UBehaviourAnalysis::GetRawBehaviourData(TArray<TArray<float>> OutRawBehaviourData)
+void UBehaviourAnalysis::GetRawBehaviourData(TArray<TArray<float>>& OutRawBehaviourData)
 {
 	for(const FBehaviourVector& Vector : BehaviourData)
 	{
@@ -193,6 +195,7 @@ void UBehaviourAnalysis::CalculateDistancesToCentroids(TArray<TArray<float>>& Ou
 		{
 			Distance.Add(GetEuclideanDistance(RawBehaviourData[i], Centroids[j]));
 		}
+		OutDistances.Add(Distance);
 	}
 }
 
@@ -233,23 +236,122 @@ float UBehaviourAnalysis::GetEuclideanDistance(const TArray<float>& Start, const
 	return FMath::Sqrt(QuadDistance);
 }
 
-float UBehaviourAnalysis::GetTolerance(const TArray<TArray<float>> Old, const TArray<TArray<float>> New)
+float UBehaviourAnalysis::GetTolerance(const TArray<TArray<float>>& Old, const TArray<TArray<float>>& New)
 {
-	TArray<float> Eps;
+	float Eps = 0.f;
 
-	for(int32 i = 0; i < Old.Num() && New.Num(); ++i)
+	for(int32 i = 0; i < Old.Num() && i < New.Num(); ++i)
 	{
-		for(int32 j = 0; j < Old.Num() && New.Num(); ++j)
+		for(int32 j = 0; j < Old[i].Num() && j < New[i].Num(); ++j)
 		{
-			Eps.Add(FMath::Abs(Old[i][j] - New[i][j]));
+			Eps += (Old[i][j] - New[i][j]) * (Old[i][j] - New[i][j]);
 		}
 	}
 
-	const float* MaxElement = Algo::MaxElement(Eps);
+	return FMath::Sqrt(Eps);
+}
 
-	if(MaxElement != nullptr)
+void UBehaviourAnalysis::InterpretClusterResult(TArray<TArray<float>>& Centroids, TArray<TArray<float>>& FCMMatrix)
+{
+	//сформувати об'єкт середніх значень віднесення до кожного кластеру
+	//відсортувати показники центроїдів
+	//віднести середнє значення показника до того кластеру, який відповідає найвижчим значенням показників центроїда
+
+	TArray<float> MeanObj;
+	for(int32 i = 0; i < FCMMatrix[0].Num(); ++i)
 	{
-		return *MaxElement;
+		float Membership = 0.f;
+		for(int32 j = 0; j < FCMMatrix.Num(); ++j)
+		{
+			Membership += FCMMatrix[j][i];
+		}
+		MeanObj.Add(Membership / FCMMatrix.Num());
 	}
-	return 0.f;
+
+	TArray<BehaviourType> Interpretation;
+	GetCentroidsInterpretation(Centroids, Interpretation);
+
+	for(int32 i = 0; i < Interpretation.Num(); ++i)
+	{
+		FuzzyClusteringResult[Interpretation[i]] = MeanObj[i]; 
+	}
+}
+
+void UBehaviourAnalysis::GetCentroidsInterpretation(const TArray<TArray<float>>& Centroids,
+	TArray<BehaviourType>& OutInterpretation)
+{
+	for(int32 i = 0; i < Centroids.Num(); ++i)
+	{
+		TMap<int32, float> IndexToValueCentroid;
+		for(int32 j = 0; j < Centroids[i].Num(); ++j)
+		{
+			IndexToValueCentroid.Add(TPair<int32, float>(j, Centroids[i][j]));
+		}
+		IndexToValueCentroid.ValueSort([](float A, float B)
+		{
+			return A > B;
+		});
+
+		TArray<int32> Indexes;
+		IndexToValueCentroid.GetKeys(Indexes);
+
+		TMap<BehaviourType, float> ClusterProbability = {
+			TPair<BehaviourType, float>(BehaviourType::Killer, 0.f),
+			TPair<BehaviourType, float>(BehaviourType::Explorer, 0.f),
+			TPair<BehaviourType, float>(BehaviourType::Achiever, 0.f),
+			TPair<BehaviourType, float>(BehaviourType::Socializer, 0.f)
+		};
+
+		for(int32 k = 0; k < Indexes.Num(); ++k)
+		{
+			switch (Indexes[k])
+			{
+			case 0:
+				ClusterProbability[BehaviourType::Explorer] += (Indexes.Num() - k) / 3.f;
+				break;
+			case 1:
+				ClusterProbability[BehaviourType::Explorer] += (Indexes.Num() - k) / 3.f;
+				ClusterProbability[BehaviourType::Achiever] += (Indexes.Num() - k) / 2.f;
+				break;
+			case 2:
+				ClusterProbability[BehaviourType::Achiever] += (Indexes.Num() - k) / 2.f;
+				break;
+			case 3:
+				ClusterProbability[BehaviourType::Socializer] += (Indexes.Num() - k) / 2.f;
+				break;
+			case 4:
+				ClusterProbability[BehaviourType::Socializer] += k / 2.f;
+				break;
+			case 5:
+				ClusterProbability[BehaviourType::Killer] += (Indexes.Num() - k) / 2.f;
+				break;
+			case 6:
+				ClusterProbability[BehaviourType::Killer] += k / 2.f;
+				break;
+			case 7:
+				ClusterProbability[BehaviourType::Explorer] += (Indexes.Num() - k) / 3.f;
+				break;
+			default:
+				break;
+			}
+		}
+
+		ClusterProbability.ValueSort([](float A, float B)
+		{
+			return A > B;
+		});
+
+		TArray<BehaviourType> Clusters;
+		ClusterProbability.GetKeys(Clusters);
+
+		for(BehaviourType Behaviour : Clusters)
+		{
+			if(!OutInterpretation.Contains(Behaviour))
+			{
+				OutInterpretation.Add(Behaviour);
+				break;
+			}
+		}
+		
+	}
 }

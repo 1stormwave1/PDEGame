@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BehaviourAnalysis.h"
 #include "RoomTraitTree.generated.h"
 
 UENUM(BlueprintType)
@@ -127,6 +128,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FTraitSpawnChance> DefaultTraitsSpawnChance;
+
+	UPROPERTY(BlueprintReadWrite)
+	TMap<BehaviourType, float> FuzzyClusteringResult =
+	{
+		TPair<BehaviourType, float>(BehaviourType::Killer, 0.25f),
+		TPair<BehaviourType, float>(BehaviourType::Explorer, 0.25f),
+		TPair<BehaviourType, float>(BehaviourType::Achiever, 0.25f),
+		TPair<BehaviourType, float>(BehaviourType::Socializer, 0.25f)
+	};
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void InitializeByRoomType(ERoomTypeEnum NewRoomType);

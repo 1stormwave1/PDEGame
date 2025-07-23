@@ -10,7 +10,7 @@ void UTraitGeneticAlgorithm::InitializeByRoomType(ERoomTypeEnum NewRoomType)
 	Type = NewRoomType;
 }
 
-void UTraitGeneticAlgorithm::Initialize(UGeneticAlgorithmSave* NewGeneticAlgorithmSave, int32 MinPopulationCount)
+void UTraitGeneticAlgorithm::Initialize(UGeneticAlgorithmSave* NewGeneticAlgorithmSave, UBehaviourAnalysis* BehaviourAnalysis,int32 MinPopulationCount)
 {
 	if(!IsValid(NewGeneticAlgorithmSave))
 	{
@@ -27,6 +27,11 @@ void UTraitGeneticAlgorithm::Initialize(UGeneticAlgorithmSave* NewGeneticAlgorit
 		URoomTraits* NewRoomTraits = NewObject<URoomTraits>(this, RoomTraitsClass);
 		NewRoomTraits->RoomType = Traits.RoomType;
 		NewRoomTraits->Traits = Traits.RoomTraits;
+
+		if(BehaviourAnalysis != nullptr)
+		{
+			NewRoomTraits->FuzzyClusteringResult = BehaviourAnalysis->FuzzyClusteringResult;
+		}
 		
 		TraitsPopulation.Add(NewRoomTraits);
 	}
@@ -39,6 +44,11 @@ void UTraitGeneticAlgorithm::Initialize(UGeneticAlgorithmSave* NewGeneticAlgorit
 			URoomTraits* NewRoomTraits = NewObject<URoomTraits>(this, RoomTraitsClass);
 			NewRoomTraits->InitializeDefault();
 
+			if(BehaviourAnalysis != nullptr)
+			{
+				NewRoomTraits->FuzzyClusteringResult = BehaviourAnalysis->FuzzyClusteringResult;
+			}
+
 			TraitsPopulation.Add(NewRoomTraits);
 		}
 	}
@@ -47,6 +57,11 @@ void UTraitGeneticAlgorithm::Initialize(UGeneticAlgorithmSave* NewGeneticAlgorit
 		//+1 залежно від типу гравця (після аналізу даних)
 		URoomTraits* NewRoomTraits = NewObject<URoomTraits>(this, RoomTraitsClass);
 		NewRoomTraits->InitializeDefault();
+
+		if(BehaviourAnalysis != nullptr)
+		{
+			NewRoomTraits->FuzzyClusteringResult = BehaviourAnalysis->FuzzyClusteringResult;
+		}
 
 		TraitsPopulation.Add(NewRoomTraits);
 	}

@@ -137,7 +137,7 @@ public:
 	UPROPERTY(Transient)
 	UBehaviourSaveGame* BehaviourSaveGame = nullptr;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FBehaviourVector> BehaviourData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -148,6 +148,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float FuzzinessParameter = 2.f;
+
+	UPROPERTY(EditAnywhere)
+	float Tolerance = 0.01f;
 
 	UPROPERTY(BlueprintReadWrite)
 	TMap<BehaviourType, float> FuzzyClusteringResult =
@@ -195,13 +198,13 @@ public:
 	void AddCurrentBehaviour();
 
 private:
-	void FuzzyCMeans(int32 ClustersCount = 4);
+	void FuzzyCMeans(TArray<TArray<float>>& FCMMatrix, TArray<TArray<float>>& Centroids, int32 ClustersCount = 4);
 
 	void InitializeFCMMatrix(TArray<TArray<float>>& FCMMatrix, int32 ClusterCount);
 
 	void CalculateCentroids(TArray<TArray<float>>& OutCentroids, const TArray<TArray<float>>& FCMMatrix);
 
-	void GetRawBehaviourData(TArray<TArray<float>> OutRawBehaviourData);
+	void GetRawBehaviourData(TArray<TArray<float>>& OutRawBehaviourData);
 
 	void CalculateDistancesToCentroids(TArray<TArray<float>>& OutDistances, const TArray<TArray<float>>& Centroids);
 
@@ -209,6 +212,10 @@ private:
 
 	float GetEuclideanDistance(const TArray<float>& Start, const TArray<float>& Finish);
 
-	float GetTolerance(const TArray<TArray<float>> Old, const TArray<TArray<float>> New);
+	float GetTolerance(const TArray<TArray<float>>& Old, const TArray<TArray<float>>& New);
+
+	void InterpretClusterResult(TArray<TArray<float>>& Centroids, TArray<TArray<float>>& FCMMatrix);
+
+	void GetCentroidsInterpretation(const TArray<TArray<float>>& Centroids, TArray<BehaviourType>& OutInterpretation);
 	
 };

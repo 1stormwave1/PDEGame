@@ -6,6 +6,7 @@
 #include "RoomTraitTree.h"
 #include "TraitGeneticAlgorithm.generated.h"
 
+class UBehaviourAnalysis;
 class UGeneticAlgorithmSave;
 
 UCLASS(Blueprintable, BlueprintType)
@@ -40,7 +41,7 @@ public:
 	void InitializeByRoomType(ERoomTypeEnum NewRoomType);
 
 	UFUNCTION(BlueprintCallable)
-	void Initialize(UGeneticAlgorithmSave* NewGeneticAlgorithmSave, int32 MinPopulationCount = 1);
+	void Initialize(UGeneticAlgorithmSave* NewGeneticAlgorithmSave, UBehaviourAnalysis* BehaviourAnalysis, int32 MinPopulationCount = 1);
 
 	UFUNCTION(BlueprintCallable)
 	void Execute(TArray<URoomTraits*>& OutTraits, int32 BestCount = 1);
