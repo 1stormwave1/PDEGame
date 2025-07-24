@@ -253,10 +253,6 @@ float UBehaviourAnalysis::GetTolerance(const TArray<TArray<float>>& Old, const T
 
 void UBehaviourAnalysis::InterpretClusterResult(TArray<TArray<float>>& Centroids, TArray<TArray<float>>& FCMMatrix)
 {
-	//сформувати об'єкт середніх значень віднесення до кожного кластеру
-	//відсортувати показники центроїдів
-	//віднести середнє значення показника до того кластеру, який відповідає найвижчим значенням показників центроїда
-
 	TArray<float> MeanObj;
 	for(int32 i = 0; i < FCMMatrix[0].Num(); ++i)
 	{

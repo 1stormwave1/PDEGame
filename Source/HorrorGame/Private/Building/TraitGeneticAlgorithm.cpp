@@ -65,6 +65,8 @@ void UTraitGeneticAlgorithm::Initialize(UGeneticAlgorithmSave* NewGeneticAlgorit
 
 		TraitsPopulation.Add(NewRoomTraits);
 	}
+
+	bIsExploration = GetExplorationExploitationType(BehaviourAnalysis);
 }
 
 void UTraitGeneticAlgorithm::Execute(TArray<URoomTraits*>& OutTraits, int32 BestCount)
@@ -136,14 +138,15 @@ void UTraitGeneticAlgorithm::RouletteWheelSelection(TArray<URoomTraits*>& OutPop
 	
 	for(const URoomTraits* RoomTraits : TraitsPopulation)
 	{
-		FitnessSum += RoomTraits->GetFitnessValue();
+		FitnessSum += bIsExploration ? (1.f / RoomTraits->GetFitnessValue()) : RoomTraits->GetFitnessValue();
 	}
 
 	float CumulativeProbability = 0.f;
 	for(const URoomTraits* RoomTraits : TraitsPopulation)
 	{
 		Probabilities.Add(CumulativeProbability);
-		CumulativeProbability += RoomTraits->GetFitnessValue() / FitnessSum;
+		CumulativeProbability += (bIsExploration ?
+			(1.f / RoomTraits->GetFitnessValue()): RoomTraits->GetFitnessValue()) / FitnessSum;
 	}
 	Probabilities.Add(CumulativeProbability);
 
@@ -158,4 +161,31 @@ void UTraitGeneticAlgorithm::RouletteWheelSelection(TArray<URoomTraits*>& OutPop
 			}
 		}
 	}
+}
+
+bool UTraitGeneticAlgorithm::GetExplorationExploitationType(UBehaviourAnalysis* Behaviour)
+{
+	if(Behaviour == nullptr)
+	{
+		return true;
+	}
+	
+	float Entropy = 0.f;
+
+	TArray<BehaviourType> BehaviourTypes;
+	Behaviour->FuzzyClusteringResult.GetKeys(BehaviourTypes);
+
+	TArray<float> BehaviourCoefficients;
+	for(const BehaviourType BType : BehaviourTypes)
+	{
+		BehaviourCoefficients.Add(Behaviour->FuzzyClusteringResult[BType]);
+	}
+
+	for(const float Coefficient : BehaviourCoefficients)
+	{
+		Entropy += Coefficient * FMath::Log2(Coefficient);
+	}
+	Entropy *= -1.f;
+
+	return Entropy > EntropyExploitationLevel;
 }

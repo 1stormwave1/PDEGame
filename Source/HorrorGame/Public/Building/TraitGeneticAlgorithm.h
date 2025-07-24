@@ -28,7 +28,12 @@ class HORRORGAME_API UTraitGeneticAlgorithm : public UObject
 
 	UPROPERTY(EditAnywhere)
 	float MutateCutChance = 0.33f;
-	
+
+	UPROPERTY(EditAnywhere)
+	bool bIsExploration = true;
+
+	UPROPERTY(EditAnywhere)
+	float EntropyExploitationLevel = 1.5f;
 	
 	UPROPERTY(Transient)
 	TArray<URoomTraits*> TraitsPopulation;
@@ -54,5 +59,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE ERoomTypeEnum GetRoomType() const { return Type; }
+
+	UFUNCTION(Blueprintable)
+	bool GetExplorationExploitationType(UBehaviourAnalysis* Behaviour);
 	
 };

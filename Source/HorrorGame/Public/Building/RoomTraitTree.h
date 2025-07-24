@@ -75,6 +75,18 @@ struct FTTNode
 	FTTNode();
 };
 
+USTRUCT(Blueprintable, BlueprintType)
+struct FTraitsBehaviourTypes
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ETraitEnum Trait = ETraitEnum::None;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<BehaviourType> Behaviours;
+};
+
 USTRUCT(BlueprintType, Blueprintable)
 struct FTraitSpawnChance
 {
@@ -137,6 +149,9 @@ public:
 		TPair<BehaviourType, float>(BehaviourType::Achiever, 0.25f),
 		TPair<BehaviourType, float>(BehaviourType::Socializer, 0.25f)
 	};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FTraitsBehaviourTypes> TraitsBehaviourTypes;
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void InitializeByRoomType(ERoomTypeEnum NewRoomType);

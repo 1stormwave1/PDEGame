@@ -92,13 +92,32 @@ URoomTraits* URoomTraits::Crossover_Implementation(URoomTraits* Other)
 float URoomTraits::GetFitnessValue() const
 {
 	float FitnessValue = 0.f;
+	float WeightSum = 0.f;
 
 	for(const FTTNode& Node : Traits)
 	{
-		FitnessValue += Node.Weight;
+		float BehaviourWeight = 0.f;
+		int32 BehaviourCount = 0;
+		
+		for(FTraitsBehaviourTypes Types : TraitsBehaviourTypes)
+		{
+			if(Types.Trait == Node)
+			{
+				for(const BehaviourType Behaviour : Types.Behaviours)
+				{
+					BehaviourWeight += FuzzyClusteringResult[Behaviour];
+					++BehaviourCount;
+				}
+			}
+		}
+		BehaviourWeight /= BehaviourCount;
+		
+		FitnessValue += Node.Weight * BehaviourWeight;
+		WeightSum += BehaviourWeight;
+		
 	}
 
-	FitnessValue /= Traits.Num();
+	FitnessValue /= WeightSum;
 
 	return FitnessValue;
 }
