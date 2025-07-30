@@ -2,8 +2,10 @@
 #include "Base/Components/InteractionComponent.h"
 
 #include "Base/HorrorGameController.h"
+#include "Base/HorrorGameInstance.h"
 #include "Base/Components/InventoryComponent.h"
 #include "Inventory/ItemActor.h"
+#include "Kismet/GameplayStatics.h"
 
 
 void UInteractionComponent::BeginPlay()
@@ -107,6 +109,11 @@ void UInteractionComponent::Interact_Implementation()
 		{
 			MainController->InteractionQueue.Remove(this);
 			bIsOverlapping = false;
+
+			if(UHorrorGameInstance* GI = Cast<UHorrorGameInstance>(UGameplayStatics::GetGameInstance(this)))
+			{
+				GI->AddCollectedItem(1);
+			}
 			
 			GetOwner()->Destroy();
 		}

@@ -10,6 +10,6 @@ public class HorrorGame : ModuleRules
 		OptimizeCode = CodeOptimization.Never;
 		bUseRTTI = true;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "EnhancedInput", "UMG", "Slate", "SlateCore", "PCG", "AIModule" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "EnhancedInput", "UMG", "Slate", "SlateCore", "PCG", "AIModule", "Json", "JsonUtilities" });
 	}
 }

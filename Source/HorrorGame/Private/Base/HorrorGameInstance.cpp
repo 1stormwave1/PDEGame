@@ -90,7 +90,7 @@ void UHorrorGameInstance::AddCollectedItem(int32 Count)
 	{
 		MainSaveGame->BuildingItemsCollected += Count;
 
-		//UGameplayStatics::SaveGameToSlot(MainSaveGame, MainSaveGameSlotName, 0);
+		UGameplayStatics::SaveGameToSlot(MainSaveGame, MainSaveGameSlotName, 0);
 	}
 }
 

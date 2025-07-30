@@ -24,6 +24,7 @@ void UBehaviourAnalysis::Initialize()
 	{
 		BehaviourData = BehaviourSaveGame->BehaviourData;
 	}
+	BehaviourSaveGame->WriteJson(TEXT("behaviourdata.json"));
 }
 
 void UBehaviourAnalysis::SetCurrentCellsOverlappedPercentage(int32 AllCount, int32 PercentageCount)

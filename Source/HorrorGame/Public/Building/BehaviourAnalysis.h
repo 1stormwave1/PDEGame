@@ -131,7 +131,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UBehaviourSaveGame> BehaviourSaveGameClass;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	FString BehaviourSaveGameSlotName = "BehaviourSave";
 	
 	UPROPERTY(Transient)

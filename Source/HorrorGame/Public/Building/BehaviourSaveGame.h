@@ -16,5 +16,7 @@ class HORRORGAME_API UBehaviourSaveGame : public USaveGame
 public:
 	UPROPERTY(BlueprintReadWrite)
 	TArray<FBehaviourVector> BehaviourData;
-	
+
+	UFUNCTION(BlueprintCallable)
+	void WriteJson(FString JsonFilePath);
 };
