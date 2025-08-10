@@ -54,7 +54,6 @@ void UTraitGeneticAlgorithm::Initialize(UGeneticAlgorithmSave* NewGeneticAlgorit
 	}
 	else
 	{
-		//+1 залежно від типу гравця (після аналізу даних)
 		URoomTraits* NewRoomTraits = NewObject<URoomTraits>(this, RoomTraitsClass);
 		NewRoomTraits->InitializeDefault();
 
